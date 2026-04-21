@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- FUTUMORE — Campaign Subpage Template                   -->
+    <!-- Duplicate and customize for each new campaign          -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- ── SEO — CUSTOMIZE PER CAMPAIGN ────────────────────── -->
+    <title>[CAMPAIGN NAME] — FUTUMORE IT Solutions</title>
+    <meta name="description" content="[CAMPAIGN DESCRIPTION — 155 chars max, include primary keyword]">
+    <meta name="keywords" content="[CAMPAIGN KEYWORDS], FUTUMORE, business IT solutions">
+    <meta name="author" content="FUTUMORE">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://futumore.com/campaigns/[CAMPAIGN-SLUG]/">
+
+    <!-- ── OPEN GRAPH ──────────────────────────────────────── -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="FUTUMORE">
+    <meta property="og:title" content="[CAMPAIGN NAME] — FUTUMORE">
+    <meta property="og:description" content="[CAMPAIGN DESCRIPTION]">
+    <meta property="og:url" content="https://futumore.com/campaigns/[CAMPAIGN-SLUG]/">
+    <meta property="og:image" content="https://futumore.com/campaigns/[CAMPAIGN-SLUG]/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="en_US">
+
+    <!-- ── TWITTER CARD ────────────────────────────────────── -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="[CAMPAIGN NAME] — FUTUMORE">
+    <meta name="twitter:description" content="[CAMPAIGN DESCRIPTION]">
+    <meta name="twitter:image" content="https://futumore.com/campaigns/[CAMPAIGN-SLUG]/og-image.png">
+
+    <!-- ── STRUCTURED DATA (BreadcrumbList) ────────────────── -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "FUTUMORE",
+                "item": "https://futumore.com"
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "[CAMPAIGN NAME]",
+                "item": "https://futumore.com/campaigns/[CAMPAIGN-SLUG]/"
+            }
+        ]
+    }
+    </script>
+
+    <!-- ── STRUCTURED DATA (Product/Service) ───────────────── -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": "[CAMPAIGN NAME]",
+        "description": "[CAMPAIGN DESCRIPTION]",
+        "brand": {
+            "@type": "Brand",
+            "name": "FUTUMORE"
+        },
+        "offers": {
+            "@type": "Offer",
+            "availability": "https://schema.org/InStock",
+            "priceCurrency": "USD",
+            "price": "0",
+            "description": "Contact for custom pricing"
+        }
+    }
+    </script>
+
+    <!-- ── FAVICON ─────────────────────────────────────────── -->
+    <link rel="icon" type="image/png" href="../../logo-white-stable.png">
+    <link rel="apple-touch-icon" href="../../logo-white-stable.png">
+
+    <!-- ── FONTS ───────────────────────────────────────────── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ── STYLESHEETS ─────────────────────────────────────── -->
+    <link rel="stylesheet" href="../../styles.css">
+    <!-- Optional: campaign-specific overrides -->
+    <!-- <link rel="stylesheet" href="campaign.css"> -->
+</head>
+<body>
+
+    <!-- ── NAVIGATION (consistent with main site) ──────────── -->
+    <nav id="main-nav" class="nav" aria-label="Main navigation">
+        <div class="nav__inner">
+            <a href="/" class="nav__logo" aria-label="FUTUMORE Home">
+                <img src="../../logo-white.png" alt="FUTUMORE Logo" width="40" height="40">
+                <span class="nav__brand">FUTUMORE</span>
+            </a>
+            <ul class="nav__links" id="nav-links">
+                <li><a href="/#solutions" class="nav__link">Solutions</a></li>
+                <li><a href="/#results" class="nav__link">Results</a></li>
+                <li><a href="/#portfolio" class="nav__link">Portfolio</a></li>
+                <li><a href="/#process" class="nav__link">Process</a></li>
+                <li><a href="#campaign-cta" class="nav__link nav__link--cta">Get Started</a></li>
+            </ul>
+            <button class="nav__burger" id="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- CAMPAIGN HERO                                          -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <header id="campaign-hero" class="hero">
+        <div class="hero__noise" aria-hidden="true"></div>
+        <div class="hero__gradient-orb hero__gradient-orb--1" aria-hidden="true"></div>
+
+        <div class="hero__content">
+            <div class="hero__badge anim-fade-up">
+                <span class="hero__badge-dot"></span>
+                [CAMPAIGN CATEGORY]
+            </div>
+            <h1 class="hero__title anim-fade-up anim-delay-1">
+                [CAMPAIGN HEADLINE]<br>
+                <span class="hero__title-accent">[CAMPAIGN SUBHEADLINE]</span>
+            </h1>
+            <p class="hero__subtitle anim-fade-up anim-delay-2">
+                [CAMPAIGN VALUE PROPOSITION — 2-3 sentences describing the specific solution]
+            </p>
+            <div class="hero__actions anim-fade-up anim-delay-3">
+                <a href="#campaign-cta" class="btn btn--primary" id="campaign-cta-primary">
+                    <span>[CTA TEXT]</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+                <a href="/" class="btn btn--ghost">
+                    <span>Back to FUTUMORE</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- ═══════════════════════════════════════════════════ -->
+        <!-- ADD CAMPAIGN-SPECIFIC SECTIONS HERE                -->
+        <!-- Use the same glass, anim-reveal classes from       -->
+        <!-- the main design system.                            -->
+        <!-- ═══════════════════════════════════════════════════ -->
+
+        <!-- Example: Campaign Details Section -->
+        <section class="section" aria-labelledby="campaign-details-heading">
+            <div class="container">
+                <div class="section__header anim-reveal">
+                    <span class="section__tag">[SECTION TAG]</span>
+                    <h2 id="campaign-details-heading" class="section__title">
+                        [SECTION TITLE] <span class="text-accent">[ACCENT]</span>
+                    </h2>
+                    <p class="section__desc">
+                        [SECTION DESCRIPTION]
+                    </p>
+                </div>
+                <!-- Your campaign content here -->
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="section section--process" id="campaign-cta" aria-labelledby="campaign-cta-heading">
+            <div class="container">
+                <div class="process-cta anim-reveal">
+                    <div class="process-cta__glow" aria-hidden="true"></div>
+                    <div class="process-cta__content glass">
+                        <h3 class="process-cta__title" id="campaign-cta-heading">
+                            [CTA HEADING] <span class="text-accent">[CTA ACCENT]</span>
+                        </h3>
+                        <p class="process-cta__desc">[CTA DESCRIPTION]</p>
+                        <form class="contact-form" id="contact-form" action="#" method="POST" novalidate>
+                            <div class="contact-form__row">
+                                <div class="contact-form__field">
+                                    <label for="contact-name" class="contact-form__label">Full Name</label>
+                                    <input type="text" id="contact-name" name="name" class="contact-form__input glass" placeholder="John Doe" required autocomplete="name">
+                                </div>
+                                <div class="contact-form__field">
+                                    <label for="contact-email" class="contact-form__label">Email</label>
+                                    <input type="email" id="contact-email" name="email" class="contact-form__input glass" placeholder="john@company.com" required autocomplete="email">
+                                </div>
+                            </div>
+                            <div class="contact-form__field">
+                                <label for="contact-message" class="contact-form__label">Tell us about your needs</label>
+                                <textarea id="contact-message" name="message" class="contact-form__textarea contact-form__input glass" placeholder="I'm looking for..." rows="4" required></textarea>
+                            </div>
+                            <input type="hidden" name="campaign" value="[CAMPAIGN-SLUG]">
+                            <button type="submit" class="btn btn--primary btn--full" id="contact-submit">
+                                <span class="btn__text">[CTA BUTTON TEXT]</span>
+                                <span class="btn__loader" aria-hidden="true"></span>
+                                <svg class="btn__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>
+                            </button>
+                            <div class="contact-form__status" id="form-status" role="alert" aria-live="polite"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ── FOOTER (consistent with main site) ──────────────── -->
+    <footer class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer__bottom" style="padding-top: 0; border: none;">
+                <p>&copy; <span id="current-year">2026</span> FUTUMORE. All rights reserved.</p>
+                <div class="footer__legal">
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../script.js"></script>
+</body>
+</html>

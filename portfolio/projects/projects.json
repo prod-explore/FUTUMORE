@@ -1,0 +1,22 @@
+[
+    {
+        "name": "Skarpa Bytom",
+        "slug": "skarpa",
+        "type": "System rezerwacji",
+        "description": "Platforma rejestracji uczestników z panelem zarządzania, systemem rezerwacji zajęć i zgodami RODO.",
+        "type_en": "Booking System",
+        "description_en": "Participant registration platform with management panel, class booking system and GDPR compliance.",
+        "url": null,
+        "favicon": "skarpa.png"
+    },
+    {
+        "name": "Studio Hypnagogia",
+        "slug": "hypnagogia",
+        "type": "Strona internetowa",
+        "description": "Profesjonalna strona studia nagraniowego z formularzem kontaktowym i optymalizacją SEO.",
+        "type_en": "Website",
+        "description_en": "Professional recording studio website with contact form and SEO optimization.",
+        "url": "https://hypnagogia.studio",
+        "favicon": "hypnagogia.png"
+    }
+]

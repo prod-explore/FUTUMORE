@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://futumore.com/</loc>
+        <xhtml:link rel="alternate" hreflang="pl" href="https://futumore.com/"/>
+        <xhtml:link rel="alternate" hreflang="en" href="https://futumore.com/?lang=en"/>
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://futumore.com/"/>
+        <lastmod>2026-04-21</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <!-- Campaign subpages will be added here as they are created -->
+    <!-- Example:
+    <url>
+        <loc>https://futumore.com/campaigns/project-name</loc>
+        <lastmod>2026-04-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    -->
+</urlset>
