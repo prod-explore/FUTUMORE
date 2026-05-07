@@ -113,19 +113,24 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     // Animation loop
     let animId;
     let baseRotation = 0;
-    
+
     function animate() {
         animId = requestAnimationFrame(animate);
 
         if (model) {
-            // Constant auto-rotation
-            if (!reducedMotion) {
-                baseRotation += 0.005; 
+            const isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                // On mobile: auto-rotate 360 degrees, ignore system reduced motion settings
+                baseRotation += 0.02;
+                model.rotation.y = baseRotation;
+                model.rotation.x = 0;
+            } else {
+                // On PC: only follow mouse, no constant auto-rotation
+                // We use lerp for smoother mouse tracking
+                model.rotation.y = mouseX * 0.5;
+                model.rotation.x = mouseY * 0.2;
             }
-            
-            // Combine constant rotation with subtle smooth mouse parallax
-            model.rotation.y = baseRotation + (mouseX * 0.2);
-            model.rotation.x = (mouseY * 0.1);
         }
 
         renderer.render(scene, camera);

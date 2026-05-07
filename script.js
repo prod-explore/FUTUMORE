@@ -8,7 +8,7 @@
 
     /* ─── CONFIGURATION ──────────────────────────────────────── */
     const CONFIG = {
-        RESEND_ENDPOINT: null, // Set to your Resend API proxy URL when ready
+        RESEND_ENDPOINT: '/api/contact',
         EMAIL_TO: 'futumore.solutions@gmail.com',
         PARTICLE_COUNT: 80,
         COUNTER_DURATION: 2000,
@@ -28,7 +28,7 @@
             hero_badge: 'Business IT Solutions',
             hero_title_1: 'Technology Tailored',
             hero_title_2: 'To Your Business',
-            hero_subtitle: 'Websites, systems, applications, automations, AI, e\u2011commerce — everything designed for your business. 2x faster and cheaper than traditional agencies.',
+            hero_subtitle: 'We design and implement technologies that become a real lever for your company\'s growth. We automate processes, optimize costs, and deliver systems that scale business based on hard data.',
             hero_cta_primary: 'Book a Free Call',
             hero_cta_secondary: 'See Solutions',
             scroll: 'Scroll',
@@ -36,7 +36,7 @@
             solutions_tag: 'What We Build',
             solutions_title_1: 'Your Problem,',
             solutions_title_2: 'Our Solution',
-            solutions_desc: "You're losing time and money on things that could work for you. We build technology that optimizes your company's costs and processes — tailored, not off-the-shelf.",
+            solutions_desc: "You're losing time and money on things that could work for you. You're losing customers due to lack of communication and an intuitive sales platform. We build technology that optimizes your company's costs and processes — tailored, not off-the-shelf.",
             sol1_title: 'Websites & Platforms',
             sol1_desc: 'Professional websites, landing pages and web platforms that work for your brand and conversions 24/7. Your online presence that actually generates revenue.',
             sol1_stat: 'Visibility that sells',
@@ -53,7 +53,7 @@
             results_tag: 'Proof',
             results_title_1: 'Numbers Speak',
             results_title_2: 'For Themselves',
-            results_desc: "We don't talk about success — we show it. Every number is real, not a presentation.",
+            results_desc: "We don't just talk about success — we create it, starting with a coherent vision.",
             stat1_label: 'Projects Delivered',
             stat2_label: 'Clients Still With Us',
             stat3_label: 'Client Revenue Growth',
@@ -102,6 +102,7 @@
             form_name: 'Full Name',
             form_company: 'Company',
             form_optional: '(optional)',
+            form_phone: 'Phone Number',
             form_message: 'Briefly describe your project',
             form_submit: 'Book Free Consultation',
             // Footer
@@ -154,6 +155,7 @@
         initSmoothScroll();
         initLanguageToggle();
         initProjectsCarousel();
+        initCustomScrollbar();
     });
 
     /* ═══════════════════════════════════════════════════════════
@@ -210,10 +212,12 @@
             const nameInput = document.getElementById('contact-name');
             const emailInput = document.getElementById('contact-email');
             const companyInput = document.getElementById('contact-company');
+            const phoneInput = document.getElementById('contact-phone');
             const messageInput = document.getElementById('contact-message');
             if (nameInput) nameInput.placeholder = 'John Doe';
             if (emailInput) emailInput.placeholder = 'john@company.com';
             if (companyInput) companyInput.placeholder = 'Company Inc.';
+            if (phoneInput) phoneInput.placeholder = '+1 000 000 000';
             if (messageInput) messageInput.placeholder = 'I need a system that...';
         } else {
             // Restore original PL texts
@@ -227,10 +231,12 @@
             const nameInput = document.getElementById('contact-name');
             const emailInput = document.getElementById('contact-email');
             const companyInput = document.getElementById('contact-company');
+            const phoneInput = document.getElementById('contact-phone');
             const messageInput = document.getElementById('contact-message');
             if (nameInput) nameInput.placeholder = 'Jan Kowalski';
             if (emailInput) emailInput.placeholder = 'jan@firma.pl';
             if (companyInput) companyInput.placeholder = 'Nazwa Firmy';
+            if (phoneInput) phoneInput.placeholder = '+48 000 000 000';
             if (messageInput) messageInput.placeholder = 'Potrzebuję systemu, który...';
         }
 
@@ -544,9 +550,10 @@
             const name = form.querySelector('#contact-name').value.trim();
             const email = form.querySelector('#contact-email').value.trim();
             const company = form.querySelector('#contact-company').value.trim();
+            const phone = form.querySelector('#contact-phone').value.trim();
             const message = form.querySelector('#contact-message').value.trim();
 
-            if (!name || !email || !message) {
+            if (!name || !email || !phone || !message) {
                 showStatus('error', t('form_error_required'));
                 return;
             }
@@ -569,7 +576,7 @@
                             from: 'FUTUMORE Website <noreply@futumore.com>',
                             subject: `Nowy Lead: ${name} — ${company || 'Brak firmy'}`,
                             replyTo: email,
-                            html: buildEmailHTML({ name, email, company, message }),
+                            html: buildEmailHTML({ name, email, company, phone, message }),
                         }),
                     });
 
@@ -578,7 +585,7 @@
                     showStatus('success', t('form_success'));
                     form.reset();
                 } else {
-                    const mailtoLink = `mailto:${CONFIG.EMAIL_TO}?subject=${encodeURIComponent(`Nowy Lead: ${name}`)}&body=${encodeURIComponent(`Imię: ${name}\nEmail: ${email}\nFirma: ${company}\n\nWiadomość:\n${message}`)}`;
+                    const mailtoLink = `mailto:${CONFIG.EMAIL_TO}?subject=${encodeURIComponent(`Nowy Lead: ${name}`)}&body=${encodeURIComponent(`Imię: ${name}\nEmail: ${email}\nTelefon: ${phone}\nFirma: ${company}\n\nWiadomość:\n${message}`)}`;
                     window.location.href = mailtoLink;
                     showStatus('success', t('form_success_mailto'));
                 }
@@ -605,7 +612,7 @@
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
-        function buildEmailHTML({ name, email, company, message }) {
+        function buildEmailHTML({ name, email, company, phone, message }) {
             return `
                 <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0a; color: #e0e0e0; padding: 40px; border-radius: 16px;">
                     <div style="text-align: center; margin-bottom: 32px;">
@@ -614,6 +621,7 @@
                     <div style="background: rgba(255,255,255,0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
                         <p style="margin: 0 0 12px;"><strong style="color: #999;">Imię:</strong> <span style="color: #fff;">${name}</span></p>
                         <p style="margin: 0 0 12px;"><strong style="color: #999;">Email:</strong> <a href="mailto:${email}" style="color: #fff;">${email}</a></p>
+                        <p style="margin: 0 0 12px;"><strong style="color: #999;">Telefon:</strong> <span style="color: #fff;">${phone}</span></p>
                         <p style="margin: 0 0 12px;"><strong style="color: #999;">Firma:</strong> <span style="color: #fff;">${company || 'Nie podano'}</span></p>
                         <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 20px 0;">
                         <p style="margin: 0 0 8px;"><strong style="color: #999;">Wiadomość:</strong></p>
@@ -663,6 +671,30 @@
         const container = document.getElementById('projects-carousel');
         if (!container) return;
 
+        // Inline project data — used as fallback when fetch() fails (e.g. file:// protocol)
+        const INLINE_PROJECTS = [
+            {
+                name: 'Skarpa Bytom',
+                slug: 'skarpa',
+                type: 'System rezerwacji',
+                description: 'Platforma rejestracji uczestników z panelem zarządzania, systemem rezerwacji zajęć i zgodami RODO.',
+                type_en: 'Booking System',
+                description_en: 'Participant registration platform with management panel, class booking system and GDPR compliance.',
+                url: null,
+                favicon: 'skarpa.png',
+            },
+            {
+                name: 'Studio Hypnagogia',
+                slug: 'hypnagogia',
+                type: 'Strona internetowa',
+                description: 'Profesjonalna strona studia nagraniowego z formularzem kontaktowym i optymalizacją SEO.',
+                type_en: 'Website',
+                description_en: 'Professional recording studio website with contact form and SEO optimization.',
+                url: 'https://hypnagogia.studio',
+                favicon: 'hypnagogia.png',
+            },
+        ];
+
         fetch('portfolio/projects/projects.json')
             .then(res => {
                 if (!res.ok) throw new Error('projects.json not found');
@@ -670,11 +702,12 @@
             })
             .then(projects => {
                 projectsData = projects;
-                renderProjectCards(container, projects);
+                renderProjectCards(container, projectsData);
             })
-            .catch(err => {
-                console.warn('Portfolio projects not loaded:', err);
-                container.closest('.carousel-wrapper--projects').style.display = 'none';
+            .catch(() => {
+                // Fallback: use inline data (works on file:// without a server)
+                projectsData = INLINE_PROJECTS;
+                renderProjectCards(container, projectsData);
             });
     }
 
@@ -693,6 +726,7 @@
     function buildProjectCard(project, isEn) {
         const type = isEn && project.type_en ? project.type_en : project.type;
         const desc = isEn && project.description_en ? project.description_en : project.description;
+        const faviconSrc = project.favicon ? `portfolio/projects/${project.favicon}` : '';
         const tag = project.url
             ? `a href="${project.url}" target="_blank" rel="noopener noreferrer"`
             : 'div';
@@ -700,11 +734,11 @@
 
         return `
             <${tag} class="project-card">
-                <img class="project-card__favicon"
-                     src="portfolio/projects/${project.favicon}"
+                ${faviconSrc ? `<img class="project-card__favicon"
+                     src="${faviconSrc}"
                      alt="${project.name}"
                      loading="lazy"
-                     onerror="this.style.display='none'">
+                     onerror="this.style.display='none'">` : ''}
                 <div class="project-card__info">
                     <span class="project-card__name">${project.name}</span>
                     <span class="project-card__type">${type}</span>
@@ -715,6 +749,94 @@
                 </div>
             </${closeTag}>
         `;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       CUSTOM SCROLLBAR
+       ═══════════════════════════════════════════════════════════ */
+    function initCustomScrollbar() {
+        const scrollbar = document.createElement('div');
+        scrollbar.className = 'custom-scrollbar';
+        document.body.appendChild(scrollbar);
+
+        let isDragging = false;
+        let startY;
+        let startScrollY;
+        
+        let lastScrollY = window.scrollY;
+        let heat = 0; // 0.0 to 1.0
+
+        function renderLoop() {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollY = window.scrollY;
+
+            if (documentHeight <= windowHeight) {
+                scrollbar.style.display = 'none';
+                requestAnimationFrame(renderLoop);
+                return;
+            } else {
+                scrollbar.style.display = 'block';
+            }
+
+            const scrollPercentage = scrollY / (documentHeight - windowHeight);
+            const thumbHeight = Math.max(windowHeight * (windowHeight / documentHeight), 40); 
+            const topPosition = scrollPercentage * (windowHeight - thumbHeight);
+
+            scrollbar.style.height = `${thumbHeight}px`;
+            scrollbar.style.transform = `translateY(${topPosition}px)`;
+
+            if (!isDragging) {
+                const dy = Math.abs(scrollY - lastScrollY);
+                
+                if (dy > 0) {
+                    // Wzrost temperatury (rozgrzewanie przy ruchu)
+                    heat += dy * 0.015; 
+                    if (heat > 1) heat = 1;
+                } else {
+                    // Spadek temperatury (stygnięcie przy braku ruchu)
+                    heat -= 0.015; // to da ok. 1 sekundę płynnego stygnięcia z 1.0 do 0
+                    if (heat < 0) heat = 0;
+                }
+
+                scrollbar.style.opacity = heat;
+            }
+
+            lastScrollY = scrollY;
+            requestAnimationFrame(renderLoop);
+        }
+
+        requestAnimationFrame(renderLoop);
+
+        scrollbar.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startY = e.clientY;
+            startScrollY = window.scrollY;
+            scrollbar.classList.add('dragging');
+            document.body.style.userSelect = 'none';
+            scrollbar.style.opacity = '1';
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const deltaY = e.clientY - startY;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const thumbHeight = parseFloat(scrollbar.style.height);
+            
+            const scrollRatio = (documentHeight - windowHeight) / (windowHeight - thumbHeight);
+            window.scrollTo(0, startScrollY + deltaY * scrollRatio);
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                scrollbar.classList.remove('dragging');
+                document.body.style.userSelect = '';
+                // reset heat so it cools down normally after drag
+                heat = 1;
+            }
+        });
     }
 
 })();
