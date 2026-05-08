@@ -56,7 +56,7 @@ app.use(helmet({
                 "https://fonts.gstatic.com",
             ],
             imgSrc: ["'self'", "data:", "blob:"],
-            connectSrc: ["'self'"],
+            connectSrc: ["'self'", "data:"],
             mediaSrc: ["'self'"],
             objectSrc: ["'none'"],
             frameSrc: ["'none'"],
