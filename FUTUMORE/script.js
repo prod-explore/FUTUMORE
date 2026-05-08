@@ -9,7 +9,7 @@
     /* ─── CONFIGURATION ──────────────────────────────────────── */
     const CONFIG = {
         RESEND_ENDPOINT: '/api/contact',
-        EMAIL_TO: 'futumore.solutions@gmail.com',
+        EMAIL_TO: 'futumore.solutions@gmail.com', // mailto: fallback only
         PARTICLE_COUNT: 80,
         COUNTER_DURATION: 2000,
         NAV_SCROLL_THRESHOLD: 50,
@@ -541,8 +541,14 @@
         const form = document.getElementById('contact-form');
         const status = document.getElementById('form-status');
         const submitBtn = document.getElementById('contact-submit');
+        const timestampField = document.getElementById('contact-timestamp');
 
         if (!form || !status || !submitBtn) return;
+
+        // Set timestamp when form loads (anti-bot timing check)
+        if (timestampField) {
+            timestampField.value = Date.now().toString();
+        }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -552,6 +558,8 @@
             const company = form.querySelector('#contact-company').value.trim();
             const phone = form.querySelector('#contact-phone').value.trim();
             const message = form.querySelector('#contact-message').value.trim();
+            const website = form.querySelector('#contact-website') ? form.querySelector('#contact-website').value : '';
+            const _t = timestampField ? timestampField.value : '';
 
             if (!name || !email || !phone || !message) {
                 showStatus('error', t('form_error_required'));
@@ -571,19 +579,18 @@
                     const response = await fetch(CONFIG.RESEND_ENDPOINT, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            to: CONFIG.EMAIL_TO,
-                            from: 'FUTUMORE Website <noreply@futumore.com>',
-                            subject: `Nowy Lead: ${name} — ${company || 'Brak firmy'}`,
-                            replyTo: email,
-                            html: buildEmailHTML({ name, email, company, phone, message }),
-                        }),
+                        body: JSON.stringify({ name, email, company, phone, message, website, _t }),
                     });
 
                     if (!response.ok) throw new Error('Failed to send');
 
                     showStatus('success', t('form_success'));
                     form.reset();
+
+                    // Reset timestamp for next submission
+                    if (timestampField) {
+                        timestampField.value = Date.now().toString();
+                    }
                 } else {
                     const mailtoLink = `mailto:${CONFIG.EMAIL_TO}?subject=${encodeURIComponent(`Nowy Lead: ${name}`)}&body=${encodeURIComponent(`Imię: ${name}\nEmail: ${email}\nTelefon: ${phone}\nFirma: ${company}\n\nWiadomość:\n${message}`)}`;
                     window.location.href = mailtoLink;
@@ -610,26 +617,6 @@
 
         function isValidEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
-
-        function buildEmailHTML({ name, email, company, phone, message }) {
-            return `
-                <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0a0a0a; color: #e0e0e0; padding: 40px; border-radius: 16px;">
-                    <div style="text-align: center; margin-bottom: 32px;">
-                        <h1 style="font-size: 24px; color: #ffffff; margin: 0;">Nowy Lead — FUTUMORE</h1>
-                    </div>
-                    <div style="background: rgba(255,255,255,0.05); padding: 24px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
-                        <p style="margin: 0 0 12px;"><strong style="color: #999;">Imię:</strong> <span style="color: #fff;">${name}</span></p>
-                        <p style="margin: 0 0 12px;"><strong style="color: #999;">Email:</strong> <a href="mailto:${email}" style="color: #fff;">${email}</a></p>
-                        <p style="margin: 0 0 12px;"><strong style="color: #999;">Telefon:</strong> <span style="color: #fff;">${phone}</span></p>
-                        <p style="margin: 0 0 12px;"><strong style="color: #999;">Firma:</strong> <span style="color: #fff;">${company || 'Nie podano'}</span></p>
-                        <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 20px 0;">
-                        <p style="margin: 0 0 8px;"><strong style="color: #999;">Wiadomość:</strong></p>
-                        <p style="margin: 0; color: #ccc; line-height: 1.6;">${message.replace(/\n/g, '<br>')}</p>
-                    </div>
-                    <p style="margin-top: 24px; font-size: 12px; color: #666; text-align: center;">Wysłano z formularza futumore.com</p>
-                </div>
-            `;
         }
     }
 

@@ -712,6 +712,12 @@
                                     class="contact-form__input contact-form__textarea glass"
                                     placeholder="Potrzebuję systemu, który..." rows="4" required></textarea>
                             </div>
+                            <!-- Honeypot (anti-spam — invisible to users) -->
+                            <div style="position:absolute;left:-9999px;top:-9999px;" aria-hidden="true">
+                                <input type="text" name="website" id="contact-website" tabindex="-1" autocomplete="off">
+                            </div>
+                            <input type="hidden" name="_t" id="contact-timestamp" value="">
+
                             <button type="submit" class="btn btn--primary btn--full" id="contact-submit">
                                 <span class="btn__text" data-i18n="form_submit">Umów Bezpłatną Konsultację</span>
                                 <span class="btn__loader" aria-hidden="true"></span>
