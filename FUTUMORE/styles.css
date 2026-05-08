@@ -1547,7 +1547,7 @@ input, textarea { font: inherit; color: inherit; }
         width: 100%;
         max-width: 300px;
         height: 250px;
-        margin: 0 auto var(--sp-sm);
+        margin: -70px auto var(--sp-sm);
         opacity: 0.9;
     }
 
