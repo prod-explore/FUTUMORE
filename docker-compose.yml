@@ -1,0 +1,17 @@
+services:
+  futumore:
+    build: .
+    container_name: futumore
+    restart: unless-stopped
+    expose:
+      - "3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    networks:
+      - futumore-network
+
+networks:
+  futumore-network:
+    driver: bridge
