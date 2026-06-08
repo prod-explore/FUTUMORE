@@ -5,6 +5,7 @@
 
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 (() => {
     const container = document.getElementById('hero-3d');
@@ -52,8 +53,12 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
     let model = null;
     const loader = new GLTFLoader();
 
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    loader.setDRACOLoader(dracoLoader);
+
     loader.load(
-        'bonsai.gltf',
+        'bonsai.glb',
         (gltf) => {
             model = gltf.scene;
 
