@@ -37,18 +37,18 @@
             solutions_title_1: 'Your Problem,',
             solutions_title_2: 'Our Solution',
             solutions_desc: "You're losing time and money on things that could work for you. You're losing customers due to lack of communication and an intuitive sales platform. We build technology that optimizes your company's costs and processes — tailored, not off-the-shelf.",
-            sol1_title: 'Websites & Platforms',
-            sol1_desc: 'Professional websites, landing pages and web platforms that work for your brand and conversions 24/7. Your online presence that actually generates revenue.',
-            sol1_stat: 'Visibility that sells',
-            sol2_title: 'Systems & Applications',
-            sol2_desc: "Custom software tailored to your company's processes. Management panels, CRM, booking systems, dashboards — whatever you need, we'll build it.",
-            sol2_stat: 'Processes under control',
-            sol3_title: 'Automation & AI',
-            sol3_desc: 'Automate what consumes your time. Intelligent systems, bots, workflows — let technology handle repetitive tasks while you focus on growth.',
-            sol3_stat: 'Time is money, we save both',
-            sol4_title: 'E-Commerce & Stores',
-            sol4_desc: 'Online stores optimized for sales. From the first click to checkout — everything designed for conversion and maximum revenue.',
-            sol4_stat: 'A store that actually sells',
+            sol1_title: 'Sites, Systems & Apps',
+            sol1_desc: 'Comprehensive web systems with integrations — bookings, calendar, orders, payment gateways, CRM, process automation. Everything tailored to your business.',
+            sol1_stat: 'Full business digitization',
+            sol2_title: 'AI Brain',
+            sol2_desc: 'A private AI brain for your company. Agent systems, knowledge automation, integration with business processes. Your company thinks faster than the competition.',
+            sol2_stat: 'Intelligence at your fingertips',
+            sol3_title: 'Smart Space',
+            sol3_desc: 'Intelligent infrastructure for home and office. AI monitoring, access control, IoT sensors, central dashboard — full control over your space.',
+            sol3_stat: 'A space that thinks for you',
+            sol4_title: 'Custom Hardware',
+            sol4_desc: 'Custom-made physical gadgets — NFC business cards, restaurant buzzers, locker cards, custom LED lights, company neons. 3D printing + ESP32.',
+            sol4_stat: 'Hardware that stands out',
             // Results
             results_tag: 'Proof',
             results_title_1: 'Numbers Speak',
@@ -108,10 +108,10 @@
             // Footer
             footer_tagline: 'IT Solutions<br>tailored to your business.',
             footer_col1_title: 'Solutions',
-            footer_link1: 'Websites & Platforms',
-            footer_link2: 'Systems & Applications',
-            footer_link3: 'Automation & AI',
-            footer_link4: 'E-Commerce & Stores',
+            footer_link1: 'Sites, Systems & Apps',
+            footer_link2: 'AI Brain',
+            footer_link3: 'Smart Space',
+            footer_link4: 'Custom Hardware',
             footer_col2_title: 'Company',
             footer_link5: 'Portfolio',
             footer_link6: 'How We Work',
@@ -713,7 +713,7 @@
     function buildProjectCard(project, isEn) {
         const type = isEn && project.type_en ? project.type_en : project.type;
         const desc = isEn && project.description_en ? project.description_en : project.description;
-        const faviconSrc = project.favicon ? `portfolio/projects/${project.favicon}` : '';
+        const faviconSrc = project.favicon ? (project.favicon.startsWith('http') ? project.favicon : `portfolio/projects/${project.favicon}`) : '';
         const tag = project.url
             ? `a href="${project.url}" target="_blank" rel="noopener noreferrer"`
             : 'div';

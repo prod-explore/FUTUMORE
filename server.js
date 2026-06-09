@@ -42,8 +42,11 @@ app.use(helmet({
             scriptSrc: [
                 "'self'",
                 "'unsafe-inline'",                         // needed for inline scripts
+                "'unsafe-eval'",                           // needed for WebAssembly compilation
+                "'wasm-unsafe-eval'",                      // modern browsers wasm eval
                 "https://cdn.jsdelivr.net",                // Three.js CDN
                 "https://fonts.googleapis.com",
+                "https://www.gstatic.com",                 // Draco decoder scripts
             ],
             scriptSrcAttr: ["'unsafe-inline'"],            // for inline event handlers
             styleSrc: [
@@ -55,8 +58,17 @@ app.use(helmet({
                 "'self'",
                 "https://fonts.gstatic.com",
             ],
-            imgSrc: ["'self'", "data:", "blob:"],
-            connectSrc: ["'self'", "data:"],
+            imgSrc: [
+                "'self'", 
+                "data:", 
+                "blob:", 
+                "https://www.google.com", 
+                "https://*.gstatic.com",
+                "https://wspinanie.ue.futumore.pl",
+                "https://studio.hypnagogia.pl"
+            ],
+            workerSrc: ["'self'", "blob:"],
+            connectSrc: ["'self'", "data:", "https://www.gstatic.com"],
             mediaSrc: ["'self'"],
             objectSrc: ["'none'"],
             frameSrc: ["'none'"],
@@ -292,6 +304,15 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
 /* ─── CATCH UNDEFINED API ROUTES ────────────────────────────── */
 app.all('/api/*', (_req, res) => {
     res.status(404).json({ error: 'Endpoint nie istnieje.' });
+});
+
+/* ─── SERVICE LANDING PAGES ─────────────────────────────────── */
+const SERVICE_PAGES = ['systems', 'ai', 'smart-space', 'hardware'];
+
+SERVICE_PAGES.forEach(page => {
+    app.get(`/services/${page}`, (_req, res) => {
+        res.sendFile(path.join(__dirname, 'FUTUMORE', 'services', `${page}.html`));
+    });
 });
 
 /* ─── SPA FALLBACK ──────────────────────────────────────────── */

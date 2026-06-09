@@ -1,22 +1,32 @@
 [
     {
-        "name": "Skarpa Bytom",
+        "name": "Fantastyczne Wspinanie",
         "slug": "skarpa",
-        "type": "System rezerwacji",
+        "type": "System rezerwacji zajęć",
         "description": "Platforma rejestracji uczestników z panelem zarządzania, systemem rezerwacji zajęć i zgodami RODO.",
         "type_en": "Booking System",
         "description_en": "Participant registration platform with management panel, class booking system and GDPR compliance.",
-        "url": null,
-        "favicon": "skarpa.png"
+        "url": "https://wspinanie.ue.futumore.pl",
+        "favicon": "fw-logo.png"
     },
     {
         "name": "Studio Hypnagogia",
         "slug": "hypnagogia",
-        "type": "Strona internetowa",
-        "description": "Profesjonalna strona studia nagraniowego z formularzem kontaktowym i optymalizacją SEO.",
-        "type_en": "Website",
-        "description_en": "Professional recording studio website with contact form and SEO optimization.",
-        "url": "https://hypnagogia.studio",
-        "favicon": "hypnagogia.png"
+        "type": "Digital assets ecommerce",
+        "description": "Profesjonalna platforma e-commerce z assetami digitalowymi i zoptymalizowanym procesem zakupowym.",
+        "type_en": "Digital assets ecommerce",
+        "description_en": "Professional e-commerce platform with digital assets and optimized checkout process.",
+        "url": "https://studio.hypnagogia.pl",
+        "favicon": "hypnagogic-state.jpg"
+    },
+    {
+        "name": "Nextouch",
+        "slug": "nextouch",
+        "type": "System bezprzewodowego sterowania",
+        "description": "Innowacyjne rozwiązanie łączące smartfon z komputerem za pomocą szybkich WebSockets, zamieniające ekran telefonu w precyzyjny panel sterowania.",
+        "type_en": "Wireless Control System",
+        "description_en": "Innovative solution connecting smartphone to PC via fast WebSockets, transforming the mobile screen into a precision control panel.",
+        "url": "https://nextouch.futumore.pl",
+        "favicon": "icon.png"
     }
 ]

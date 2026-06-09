@@ -782,6 +782,31 @@ input, textarea { font: inherit; color: inherit; }
     letter-spacing: 0.02em;
 }
 
+/* Solution card as link */
+a.solution-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
+}
+
+.solution-card__cta {
+    display: inline-block;
+    margin-top: var(--sp-lg);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    color: var(--c-gray-500);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-out);
+}
+
+.solution-card:hover .solution-card__cta {
+    color: var(--c-white);
+    transform: translateX(4px);
+}
+
 /* ═══════════════════════════════════════════════════════════════
    RESULTS SECTION
    ═══════════════════════════════════════════════════════════════ */
