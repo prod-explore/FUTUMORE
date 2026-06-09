@@ -32,5 +32,4 @@ services:
 
 networks:
   futumore-network:
-    name: futumore-network
-    driver: bridge
+    external: true
