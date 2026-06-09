@@ -11,6 +11,7 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const crypto = require('crypto');
 const { Resend } = require('resend');
+const { Webhook } = require('svix');
 
 /* ─── CONFIG ────────────────────────────────────────────────── */
 const PORT = process.env.PORT || 3000;
@@ -107,8 +108,13 @@ app.use(cors({
     maxAge: 86400,
 }));
 
-// JSON body parser — strict limit
-app.use(express.json({ limit: '10kb' }));
+// JSON body parser — strict limit + rawBody for webhook verification
+app.use(express.json({ 
+    limit: '10kb',
+    verify: (req, res, buf) => {
+        req.rawBody = buf.toString('utf8');
+    }
+}));
 
 /* ─── REQUEST LOGGING + ID ──────────────────────────────────── */
 app.use((req, res, next) => {
@@ -154,6 +160,15 @@ const contactLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: 'Zbyt wiele wiadomości. Spróbuj ponownie za 15 minut.' },
+});
+
+// Inbound email webhook limit
+const inboundLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,       // 15 minutes
+    max: 50,                         // max 50 forwarded emails per 15 min
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Zbyt wiele żądań webhook.' },
 });
 
 /* ─── RESEND CLIENT ─────────────────────────────────────────── */
@@ -298,6 +313,143 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
     } catch (err) {
         console.error('Contact form error:', err);
         res.status(500).json({ error: 'Wewnętrzny błąd serwera.' });
+    }
+});
+
+// Inbound email webhook (Resend) — forwards to futumore.solutions@gmail.com
+app.post('/api/webhooks/resend', inboundLimiter, async (req, res) => {
+    try {
+        // Signature verification (svix)
+        const webhookSecret = process.env.RESEND_WEBHOOK_SECRET;
+        if (webhookSecret) {
+            try {
+                const wh = new Webhook(webhookSecret);
+                wh.verify(req.rawBody, {
+                    'svix-id':        req.headers['svix-id'],
+                    'svix-timestamp': req.headers['svix-timestamp'],
+                    'svix-signature': req.headers['svix-signature'],
+                });
+            } catch (err) {
+                console.error('[INBOUND] Invalid signature:', err.message);
+                return res.status(400).json({ error: 'Invalid signature' });
+            }
+        }
+
+        const { type, data } = req.body;
+        if (type !== 'email.received' || !data?.email_id) {
+            return res.status(200).json({ message: 'Ignored.' });
+        }
+
+        console.log(`[INBOUND] ${data.subject} ← ${data.from}`);
+
+        if (!resend) return res.status(500).json({ error: 'Resend not initialized.' });
+
+        // Fetch full email body from Resend (retry up to 3x on 404 — eventual consistency)
+        let fullEmail = data;
+        try {
+            let fetchResponse;
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                fetchResponse = await fetch(`https://api.resend.com/emails/receiving/${data.email_id}`, {
+                    headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` }
+                });
+                if (fetchResponse.ok || fetchResponse.status !== 404) break;
+                await new Promise(r => setTimeout(r, 1500 * attempt)); // backoff: 1.5s, 3s
+            }
+            if (fetchResponse?.ok) {
+                fullEmail = await fetchResponse.json();
+                console.log(`[INBOUND] Body fetched (html: ${!!fullEmail.html}, attachments: ${(fullEmail.attachments || []).length})`);
+            } else {
+                console.warn(`[INBOUND] Body fetch failed (${fetchResponse?.status}) — metadata only`);
+            }
+        } catch (e) {
+            console.warn('[INBOUND] Body fetch exception:', e.message);
+        }
+
+        // Build forwarded email HTML
+        const originalTo    = Array.isArray(data.to) ? data.to.join(', ') : (data.to || 'Nieznany');
+        const forwardSubject = `[Fwd: ${originalTo}] ${data.subject || 'Brak tematu'}`;
+
+        // Filter out Resend attachment metadata JSON that may appear as html/text
+        const stripTags      = (s) => (s || '').replace(/<[^>]+>/g, '').trim();
+        const isMetaJson     = (s) => {
+            if (!s) return false;
+            if ((s).includes('"object":"attachment"')) return true;
+            const t = stripTags(s);
+            if (!t.startsWith('{')) return false;
+            try { JSON.parse(t); return true; } catch { return false; }
+        };
+        const safeHtml = !isMetaJson(fullEmail.html) ? (fullEmail.html || null) : null;
+        const safeText = !isMetaJson(fullEmail.text) ? (fullEmail.text || null) : null;
+        const body = safeHtml
+            ? safeHtml
+            : safeText
+                ? `<pre style="white-space:pre-wrap;font-family:sans-serif">${escapeHtml(safeText)}</pre>`
+                : '<p style="color:#999;font-style:italic">(brak treści — sprawdź załączniki)</p>';
+
+        const forwardHtml = `
+            <div style="padding:16px;background:#f5f5f5;border-bottom:1px solid #ddd;margin-bottom:16px;font-family:sans-serif;color:#333">
+                <p style="margin:0 0 4px"><strong>Od:</strong> ${escapeHtml(data.from)}</p>
+                <p style="margin:0 0 4px"><strong>Do:</strong> ${escapeHtml(originalTo)}</p>
+                <p style="margin:0 0 4px"><strong>Temat:</strong> ${escapeHtml(data.subject)}</p>
+                <p style="margin:0"><strong>Data:</strong> ${escapeHtml(data.created_at)}</p>
+            </div>
+            <div>${body}</div>`;
+
+        // Download and forward attachments
+        const forwardAttachments = [];
+        for (const att of (fullEmail.attachments || data.attachments || [])) {
+            try {
+                const filename = att.filename || att.name || 'załącznik';
+
+                // Webhook payload already contains download_url — use it directly
+                // If missing, resolve via Resend Attachments API
+                let downloadUrl = att.download_url || null;
+                if (!downloadUrl && att.id) {
+                    const r = await fetch(
+                        `https://api.resend.com/emails/receiving/${data.email_id}/attachments/${att.id}`,
+                        { headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` } }
+                    );
+                    if (r.ok) downloadUrl = (await r.json()).download_url || null;
+                }
+
+                if (downloadUrl) {
+                    const r = await fetch(downloadUrl);
+                    if (r.ok) {
+                        forwardAttachments.push({
+                            filename,
+                            content: Buffer.from(await r.arrayBuffer()),
+                            content_type: att.content_type || 'application/octet-stream',
+                        });
+                        console.log(`[INBOUND] Attachment: ${filename}`);
+                    } else {
+                        console.warn(`[INBOUND] Attachment download failed for ${filename}: ${r.status}`);
+                    }
+                }
+            } catch (e) {
+                console.error(`[INBOUND] Attachment error:`, e.message);
+            }
+        }
+
+        const { data: sendData, error: sendError } = await resend.emails.send({
+            from:        EMAIL_FROM,
+            to:          EMAIL_TO,
+            replyTo:     data.from,
+            subject:     forwardSubject,
+            html:        forwardHtml,
+            attachments: forwardAttachments.length > 0 ? forwardAttachments : undefined,
+        });
+
+        if (sendError) {
+            console.error('[INBOUND] Forward failed:', sendError);
+            return res.status(500).json({ error: 'Forward failed.' });
+        }
+
+        console.log(`✓ Forwarded (ID: ${sendData.id})`);
+        res.status(200).json({ success: true });
+
+    } catch (err) {
+        console.error('[INBOUND] Error:', err);
+        res.status(500).json({ error: 'Internal server error.' });
     }
 });
 
