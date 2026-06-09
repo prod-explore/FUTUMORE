@@ -11,8 +11,8 @@ COPY package*.json ./
 RUN npm install --omit=dev --ignore-scripts
 
 # Copy application
-COPY server.js ./
-COPY FUTUMORE/ ./FUTUMORE/
+COPY --chown=node:node server.js ./
+COPY --chown=node:node FUTUMORE/ ./FUTUMORE/
 
 EXPOSE 3000
 

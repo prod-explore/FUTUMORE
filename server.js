@@ -1,30 +1,38 @@
 /* ═══════════════════════════════════════════════════════════════
-   FUTUMORE — Server (Security-Hardened)
+   FUTUMORE — Server (Security-Hardened v2)
    Static file serving + Contact form API (Resend)
    ═══════════════════════════════════════════════════════════════ */
 
-const express = require('express');
-const path = require('path');
-const helmet = require('helmet');
-const cors = require('cors');
-const compression = require('compression');
-const rateLimit = require('express-rate-limit');
-const crypto = require('crypto');
-const { Resend } = require('resend');
-const { Webhook } = require('svix');
+const express      = require('express');
+const path         = require('path');
+const helmet       = require('helmet');
+const cors         = require('cors');
+const compression  = require('compression');
+const rateLimit    = require('express-rate-limit');
+const crypto       = require('crypto');
+const sanitizeHtml = require('sanitize-html');
+const { Resend }   = require('resend');
+const { Webhook }  = require('svix');
 
 /* ─── CONFIG ────────────────────────────────────────────────── */
-const PORT = process.env.PORT || 3000;
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const EMAIL_TO = process.env.EMAIL_TO || 'futumore.solutions@gmail.com';
-const EMAIL_FROM = process.env.EMAIL_FROM || 'FUTUMORE <onboarding@resend.dev>';
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'https://futumore.pl';
-const NODE_ENV = process.env.NODE_ENV || 'development';
-const TRUST_PROXY = process.env.TRUST_PROXY || 1;
+const PORT                  = process.env.PORT || 3000;
+const RESEND_API_KEY        = process.env.RESEND_API_KEY;
+const RESEND_WEBHOOK_SECRET = process.env.RESEND_WEBHOOK_SECRET;
+const EMAIL_TO              = process.env.EMAIL_TO   || 'futumore.solutions@gmail.com';
+const EMAIL_FROM            = process.env.EMAIL_FROM || 'FUTUMORE <onboarding@resend.dev>';
+const CORS_ORIGIN           = process.env.CORS_ORIGIN || 'https://futumore.pl';
+const NODE_ENV              = process.env.NODE_ENV   || 'development';
+const TRUST_PROXY           = parseInt(process.env.TRUST_PROXY, 10) || 1;
+
+/* ─── STARTUP VALIDATION ────────────────────────────────────── */
+if (!RESEND_WEBHOOK_SECRET) {
+    console.error('FATAL: RESEND_WEBHOOK_SECRET is not set. Refusing to start.');
+    process.exit(1);
+}
 
 /* ─── HONEYPOT CONFIG ───────────────────────────────────────── */
-const HONEYPOT_FIELD = 'website';               // hidden field — bots fill it
-const MIN_SUBMIT_TIME_MS = 3000;                // min 3s to fill form (anti-bot)
+const HONEYPOT_FIELD     = 'website';
+const MIN_SUBMIT_TIME_MS = 3000;
 
 /* ─── APP SETUP ─────────────────────────────────────────────── */
 const app = express();
@@ -43,16 +51,16 @@ app.use(helmet({
             scriptSrc: [
                 "'self'",
                 "'unsafe-inline'",                         // needed for inline scripts
-                "'unsafe-eval'",                           // needed for WebAssembly compilation
-                "'wasm-unsafe-eval'",                      // modern browsers wasm eval
-                "https://cdn.jsdelivr.net",                // Three.js CDN
+                // 'unsafe-eval' removed — use 'wasm-unsafe-eval' for WASM only
+                "'wasm-unsafe-eval'",
+                "https://cdn.jsdelivr.net",
                 "https://fonts.googleapis.com",
-                "https://www.gstatic.com",                 // Draco decoder scripts
+                "https://www.gstatic.com",
             ],
-            scriptSrcAttr: ["'unsafe-inline'"],            // for inline event handlers
+            scriptSrcAttr: ["'unsafe-inline'"],
             styleSrc: [
                 "'self'",
-                "'unsafe-inline'",                         // inline styles in frontend
+                "'unsafe-inline'",
                 "https://fonts.googleapis.com",
             ],
             fontSrc: [
@@ -60,26 +68,26 @@ app.use(helmet({
                 "https://fonts.gstatic.com",
             ],
             imgSrc: [
-                "'self'", 
-                "data:", 
-                "blob:", 
-                "https://www.google.com", 
+                "'self'",
+                "data:",
+                "blob:",
+                "https://www.google.com",
                 "https://*.gstatic.com",
                 "https://wspinanie.ue.futumore.pl",
-                "https://studio.hypnagogia.pl"
+                "https://studio.hypnagogia.pl",
             ],
-            workerSrc: ["'self'", "blob:"],
-            connectSrc: ["'self'", "data:", "https://www.gstatic.com"],
-            mediaSrc: ["'self'"],
-            objectSrc: ["'none'"],
-            frameSrc: ["'none'"],
-            baseUri: ["'self'"],
-            formAction: ["'self'"],
+            workerSrc:      ["'self'", "blob:"],
+            connectSrc:     ["'self'", "https://www.gstatic.com"],  // data: removed
+            mediaSrc:       ["'self'"],
+            objectSrc:      ["'none'"],
+            frameSrc:       ["'none'"],
+            baseUri:        ["'self'"],
+            formAction:     ["'self'"],
             frameAncestors: ["'none'"],
             upgradeInsecureRequests: [],
         },
     },
-    crossOriginEmbedderPolicy: false,              // allow CDN resources
+    crossOriginEmbedderPolicy: { policy: 'credentialless' },  // was: false
     crossOriginResourcePolicy: { policy: 'cross-origin' },
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     hsts: {
@@ -191,9 +199,7 @@ app.use(express.static(path.join(__dirname, 'FUTUMORE'), {
 
 /* ─── SECURITY HELPERS ──────────────────────────────────────── */
 
-/**
- * Escape HTML special characters to prevent XSS
- */
+/** Escape HTML special characters to prevent XSS */
 function escapeHtml(str) {
     if (typeof str !== 'string') return '';
     return str
@@ -204,15 +210,46 @@ function escapeHtml(str) {
         .replace(/'/g, '&#x27;');
 }
 
-/**
- * Sanitize input: trim + strip null bytes and control characters
- */
+/** Sanitize input: trim + strip null bytes and control characters */
 function sanitizeInput(str) {
     if (typeof str !== 'string') return '';
     return str
         .trim()
-        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')  // strip control chars
-        .replace(/\0/g, '');                                   // strip null bytes
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
+        .replace(/\0/g, '');
+}
+
+/**
+ * SSRF guard — only allow fetching from Resend CDN/API domains
+ */
+function isSafeResendUrl(url) {
+    try {
+        const u = new URL(url);
+        return u.protocol === 'https:' &&
+            (u.hostname.endsWith('.resend.com') || u.hostname === 'resend.com');
+    } catch { return false; }
+}
+
+/**
+ * Sanitize HTML from external email bodies.
+ * Strips scripts, tracking pixels, dangerous attributes — keeps basic formatting.
+ */
+function sanitizeEmailBody(html) {
+    return sanitizeHtml(html, {
+        allowedTags: [
+            'p', 'br', 'b', 'strong', 'i', 'em', 'u', 's',
+            'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+            'ul', 'ol', 'li', 'blockquote', 'pre', 'code',
+            'table', 'thead', 'tbody', 'tr', 'th', 'td',
+            'div', 'span', 'a', 'hr', 'small',
+        ],
+        allowedAttributes: {
+            'a':  ['href', 'title'],
+            '*':  ['style'],
+        },
+        allowedSchemes: ['https', 'mailto'],
+        disallowedTagsMode: 'discard',
+    });
 }
 
 /* ─── API ROUTES ────────────────────────────────────────────── */
@@ -226,7 +263,11 @@ app.get('/api/health', (_req, res) => {
 });
 
 // Contact form
-app.post('/api/contact', contactLimiter, async (req, res) => {
+app.post('/api/contact', contactLimiter, (req, res, next) => {
+    if (!req.is('application/json'))
+        return res.status(415).json({ error: 'Unsupported Media Type.' });
+    next();
+}, async (req, res) => {
     try {
         // ── Honeypot check (silent reject) ──
         if (req.body[HONEYPOT_FIELD]) {
@@ -316,23 +357,21 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
     }
 });
 
-// Inbound email webhook (Resend) — forwards to futumore.solutions@gmail.com
+// Inbound email webhook (Resend)
+// Receives mail sent to @hello.futumore.pl → forwards to futumore.solutions@gmail.com
 app.post('/api/webhooks/resend', inboundLimiter, async (req, res) => {
     try {
-        // Signature verification (svix)
-        const webhookSecret = process.env.RESEND_WEBHOOK_SECRET;
-        if (webhookSecret) {
-            try {
-                const wh = new Webhook(webhookSecret);
-                wh.verify(req.rawBody, {
-                    'svix-id':        req.headers['svix-id'],
-                    'svix-timestamp': req.headers['svix-timestamp'],
-                    'svix-signature': req.headers['svix-signature'],
-                });
-            } catch (err) {
-                console.error('[INBOUND] Invalid signature:', err.message);
-                return res.status(400).json({ error: 'Invalid signature' });
-            }
+        // ── Signature verification (always required — startup blocks if secret missing) ──
+        try {
+            const wh = new Webhook(RESEND_WEBHOOK_SECRET);
+            wh.verify(req.rawBody, {
+                'svix-id':        req.headers['svix-id'],
+                'svix-timestamp': req.headers['svix-timestamp'],
+                'svix-signature': req.headers['svix-signature'],
+            });
+        } catch (err) {
+            console.error('[INBOUND] Invalid signature:', err.message);
+            return res.status(400).json({ error: 'Invalid signature.' });
         }
 
         const { type, data } = req.body;
@@ -340,20 +379,20 @@ app.post('/api/webhooks/resend', inboundLimiter, async (req, res) => {
             return res.status(200).json({ message: 'Ignored.' });
         }
 
-        console.log(`[INBOUND] ${data.subject} ← ${data.from}`);
-
+        console.log(`[INBOUND] ${data.subject || '(no subject)'} ← ${data.from}`);
         if (!resend) return res.status(500).json({ error: 'Resend not initialized.' });
 
-        // Fetch full email body from Resend (retry up to 3x on 404 — eventual consistency)
+        // ── Fetch full email body (retry up to 3x — Resend eventual consistency) ──
         let fullEmail = data;
         try {
             let fetchResponse;
             for (let attempt = 1; attempt <= 3; attempt++) {
-                fetchResponse = await fetch(`https://api.resend.com/emails/receiving/${data.email_id}`, {
-                    headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` }
-                });
+                fetchResponse = await fetch(
+                    `https://api.resend.com/emails/receiving/${data.email_id}`,
+                    { headers: { 'Authorization': `Bearer ${RESEND_API_KEY}` } }
+                );
                 if (fetchResponse.ok || fetchResponse.status !== 404) break;
-                await new Promise(r => setTimeout(r, 1500 * attempt)); // backoff: 1.5s, 3s
+                await new Promise(r => setTimeout(r, 1500 * attempt));
             }
             if (fetchResponse?.ok) {
                 fullEmail = await fetchResponse.json();
@@ -365,71 +404,67 @@ app.post('/api/webhooks/resend', inboundLimiter, async (req, res) => {
             console.warn('[INBOUND] Body fetch exception:', e.message);
         }
 
-        // Build forwarded email HTML
-        const originalTo    = Array.isArray(data.to) ? data.to.join(', ') : (data.to || 'Nieznany');
-        const forwardSubject = `[Fwd: ${originalTo}] ${data.subject || 'Brak tematu'}`;
+        // ── Build forwarded email ──
+        const originalTo     = Array.isArray(data.to) ? data.to.join(', ') : (data.to || '');
+        const forwardSubject = `[Fwd: ${originalTo}] ${data.subject || '(brak tematu)'}`;
 
-        // Filter out Resend attachment metadata JSON that may appear as html/text
-        const stripTags      = (s) => (s || '').replace(/<[^>]+>/g, '').trim();
-        const isMetaJson     = (s) => {
-            if (!s) return false;
-            if ((s).includes('"object":"attachment"')) return true;
-            const t = stripTags(s);
-            if (!t.startsWith('{')) return false;
-            try { JSON.parse(t); return true; } catch { return false; }
-        };
-        const safeHtml = !isMetaJson(fullEmail.html) ? (fullEmail.html || null) : null;
-        const safeText = !isMetaJson(fullEmail.text) ? (fullEmail.text || null) : null;
-        const body = safeHtml
-            ? safeHtml
-            : safeText
-                ? `<pre style="white-space:pre-wrap;font-family:sans-serif">${escapeHtml(safeText)}</pre>`
-                : '<p style="color:#999;font-style:italic">(brak treści — sprawdź załączniki)</p>';
+        // Sanitize inbound HTML — strips scripts, tracking pixels, dangerous attrs
+        let body;
+        if (fullEmail.html) {
+            body = sanitizeEmailBody(fullEmail.html);
+        } else if (fullEmail.text) {
+            body = `<pre style="white-space:pre-wrap;font-family:sans-serif;line-height:1.6">${escapeHtml(fullEmail.text)}</pre>`;
+        } else {
+            body = '<p style="color:#999;font-style:italic">(brak treści — sprawdź załączniki)</p>';
+        }
 
         const forwardHtml = `
-            <div style="padding:16px;background:#f5f5f5;border-bottom:1px solid #ddd;margin-bottom:16px;font-family:sans-serif;color:#333">
-                <p style="margin:0 0 4px"><strong>Od:</strong> ${escapeHtml(data.from)}</p>
-                <p style="margin:0 0 4px"><strong>Do:</strong> ${escapeHtml(originalTo)}</p>
-                <p style="margin:0 0 4px"><strong>Temat:</strong> ${escapeHtml(data.subject)}</p>
-                <p style="margin:0"><strong>Data:</strong> ${escapeHtml(data.created_at)}</p>
-            </div>
-            <div>${body}</div>`;
+<div style="padding:16px;background:#f5f5f5;border-bottom:1px solid #ddd;margin-bottom:16px;font-family:sans-serif;color:#333;font-size:14px">
+  <p style="margin:0 0 4px"><strong>Od:</strong> ${escapeHtml(data.from)}</p>
+  <p style="margin:0 0 4px"><strong>Do:</strong> ${escapeHtml(originalTo)}</p>
+  <p style="margin:0 0 4px"><strong>Temat:</strong> ${escapeHtml(data.subject || '')}</p>
+  <p style="margin:0"><strong>Data:</strong> ${escapeHtml(data.created_at || '')}</p>
+</div>
+<div style="font-family:sans-serif;padding:0 16px">${body}</div>`;
 
-        // Download and forward attachments
+        // ── Download and forward attachments (SSRF-guarded) ──
         const forwardAttachments = [];
         for (const att of (fullEmail.attachments || data.attachments || [])) {
             try {
                 const filename = att.filename || att.name || 'załącznik';
 
-                // Webhook payload already contains download_url — use it directly
-                // If missing, resolve via Resend Attachments API
                 let downloadUrl = att.download_url || null;
                 if (!downloadUrl && att.id) {
                     const r = await fetch(
                         `https://api.resend.com/emails/receiving/${data.email_id}/attachments/${att.id}`,
-                        { headers: { 'Authorization': `Bearer ${process.env.RESEND_API_KEY}` } }
+                        { headers: { 'Authorization': `Bearer ${RESEND_API_KEY}` } }
                     );
                     if (r.ok) downloadUrl = (await r.json()).download_url || null;
                 }
 
-                if (downloadUrl) {
-                    const r = await fetch(downloadUrl);
-                    if (r.ok) {
-                        forwardAttachments.push({
-                            filename,
-                            content: Buffer.from(await r.arrayBuffer()),
-                            content_type: att.content_type || 'application/octet-stream',
-                        });
-                        console.log(`[INBOUND] Attachment: ${filename}`);
-                    } else {
-                        console.warn(`[INBOUND] Attachment download failed for ${filename}: ${r.status}`);
-                    }
+                // SSRF guard — only fetch from Resend domains
+                if (!isSafeResendUrl(downloadUrl)) {
+                    console.warn(`[INBOUND] Blocked unsafe attachment URL: ${downloadUrl}`);
+                    continue;
+                }
+
+                const r = await fetch(downloadUrl);
+                if (r.ok) {
+                    forwardAttachments.push({
+                        filename,
+                        content:      Buffer.from(await r.arrayBuffer()),
+                        content_type: att.content_type || 'application/octet-stream',
+                    });
+                    console.log(`[INBOUND] Attachment: ${filename}`);
+                } else {
+                    console.warn(`[INBOUND] Attachment download failed for ${filename}: ${r.status}`);
                 }
             } catch (e) {
-                console.error(`[INBOUND] Attachment error:`, e.message);
+                console.error('[INBOUND] Attachment error:', e.message);
             }
         }
 
+        // ── Forward ──
         const { data: sendData, error: sendError } = await resend.emails.send({
             from:        EMAIL_FROM,
             to:          EMAIL_TO,
@@ -444,7 +479,7 @@ app.post('/api/webhooks/resend', inboundLimiter, async (req, res) => {
             return res.status(500).json({ error: 'Forward failed.' });
         }
 
-        console.log(`✓ Forwarded (ID: ${sendData.id})`);
+        console.log(`✓ Forwarded (ID: ${sendData.id}) — ${data.from} → ${EMAIL_TO}`);
         res.status(200).json({ success: true });
 
     } catch (err) {
