@@ -691,6 +691,24 @@
         grid-template-columns: 1fr;
         gap: var(--sp-xl);
     }
+
+    .product-slider__btn {
+        position: absolute;
+        top: calc(37.5vw - 10px); /* Exactly centered over the 4/3 image */
+        transform: translateY(-50%);
+        z-index: 10;
+        background: rgba(0, 0, 0, 0.7);
+        border-color: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+    }
+
+    #slider-prev {
+        left: var(--sp-md);
+    }
+
+    #slider-next {
+        right: var(--sp-md);
+    }
 }
 
 @media (max-width: 768px) {
