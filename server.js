@@ -601,7 +601,7 @@ function buildEmailHTML({ name, email, company, phone, message }) {
             <p style="color:#ccc; font-size:15px; line-height:1.7; margin:0;">${formattedMessage}</p>
         </div>
         <p style="margin-top:24px; font-size:11px; color:#444; text-align:center;">
-            Wysłano z formularza futumore.com · ${new Date().toISOString().slice(0, 16).replace('T', ' ')}
+            Wysłano z formularza futumore.pl · ${new Date().toISOString().slice(0, 16).replace('T', ' ')}
         </p>
     </div>
 </body>

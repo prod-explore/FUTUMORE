@@ -26,8 +26,8 @@
             nav_cta: 'Book a Call',
             // Hero
             hero_badge: 'Business IT Solutions',
-            hero_title_1: 'Technology Tailored',
-            hero_title_2: 'To Your Business',
+            hero_title_1: 'Aggregating your business',
+            hero_title_2: 'into the future',
             hero_subtitle: 'We design and implement technologies that become a real lever for your company\'s growth. We automate processes, optimize costs, and deliver systems that scale business based on hard data.',
             hero_cta_primary: 'Book a Free Call',
             hero_cta_secondary: 'See Solutions',
@@ -69,17 +69,6 @@
             portfolio_title_1: 'Trusted By',
             portfolio_title_2: 'Innovators',
             portfolio_desc: 'From startups to established companies — our solutions power businesses that think about the future.',
-            car1_name: 'SaaS Platform',
-            car1_tag: 'Web App',
-            car2_name: 'Analytics Panel',
-            car3_name: 'Management System',
-            car3_tag: 'Enterprise',
-            car4_name: 'Mobile App',
-            car4_tag: 'E-Commerce',
-            car5_name: 'Global Platform',
-            car5_tag: 'Marketplace',
-            car6_name: 'Booking System',
-            car6_tag: 'Automation',
             // Process
             process_tag: 'How We Work',
             process_title_1: 'From Idea to',
@@ -265,17 +254,20 @@
 
         // Scroll behavior
         window.addEventListener('scroll', () => {
-            if (window.scrollY > CONFIG.NAV_SCROLL_THRESHOLD) {
+            const isScrolled = window.scrollY > CONFIG.NAV_SCROLL_THRESHOLD;
+            if (isScrolled) {
                 nav.classList.add('nav--scrolled');
             } else {
                 nav.classList.remove('nav--scrolled');
             }
+            document.body.classList.toggle('is-scrolled', isScrolled);
         }, { passive: true });
 
         // Mobile menu toggle
         burger.addEventListener('click', () => {
             const isActive = burger.classList.toggle('active');
             links.classList.toggle('active');
+            nav.classList.toggle('menu-open');
             burger.setAttribute('aria-expanded', isActive);
             document.body.style.overflow = isActive ? 'hidden' : '';
         });
@@ -285,6 +277,7 @@
             link.addEventListener('click', () => {
                 burger.classList.remove('active');
                 links.classList.remove('active');
+                nav.classList.remove('menu-open');
                 burger.setAttribute('aria-expanded', 'false');
                 document.body.style.overflow = '';
             });
@@ -705,9 +698,44 @@
         }
 
         const isEn = currentLang === 'en';
-        const cards = projects.map(p => buildProjectCard(p, isEn)).join('');
-        // Duplicate for infinite scroll
-        container.innerHTML = cards + cards;
+        let cards = projects.map(p => buildProjectCard(p, isEn)).join('');
+        
+        // Wypełniamy ekran, żeby przy małej liczbie projektów (np. 2) prawa strona nie była pusta.
+        // Gwarantujemy, że "bazowy" set ma co najmniej 10-12 elementów.
+        if (projects.length > 0 && projects.length < 12) {
+            const multiplier = Math.ceil(12 / projects.length);
+            cards = cards.repeat(multiplier);
+        }
+        
+        container.innerHTML = cards;
+
+        // Initialize drag-to-scroll
+        const wrapper = container.closest('.carousel-wrapper');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        wrapper.addEventListener('mousedown', (e) => {
+            isDown = true;
+            wrapper.classList.add('active');
+            startX = e.pageX - wrapper.offsetLeft;
+            scrollLeft = wrapper.scrollLeft;
+        });
+        wrapper.addEventListener('mouseleave', () => {
+            isDown = false;
+            wrapper.classList.remove('active');
+        });
+        wrapper.addEventListener('mouseup', () => {
+            isDown = false;
+            wrapper.classList.remove('active');
+        });
+        wrapper.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - wrapper.offsetLeft;
+            const walk = (x - startX) * 2; // Scroll speed multiplier
+            wrapper.scrollLeft = scrollLeft - walk;
+        });
     }
 
     function buildProjectCard(project, isEn) {
@@ -731,7 +759,6 @@
                     <span class="project-card__type">${type}</span>
                 </div>
                 <div class="project-card__tooltip">
-                    <span class="project-card__tooltip-type">${type}</span>
                     <span class="project-card__tooltip-desc">${desc}</span>
                 </div>
             </${closeTag}>

@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
-Sitemap: https://futumore.com/sitemap.xml
+Sitemap: https://futumore.pl/sitemap.xml
