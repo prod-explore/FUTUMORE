@@ -29,23 +29,23 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.3;
+    renderer.toneMappingExposure = 1.8; // Zwiększona ekspozycja (było 1.3)
     container.appendChild(renderer.domElement);
 
     // Lighting — dramatic, moody
     // Lighting — Bright & Metallic focus
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2); // Mocniejsze światło otoczenia (było 0.6)
     scene.add(ambientLight);
 
-    const mainLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    const mainLight = new THREE.DirectionalLight(0xffffff, 3.5); // Mocniejsze światło główne (było 2.5)
     mainLight.position.set(5, 5, 5);
     scene.add(mainLight);
 
-    const rimLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    const rimLight = new THREE.DirectionalLight(0xffffff, 2.5); // Mocniejsze oświetlenie krawędzi (było 1.5)
     rimLight.position.set(-5, 2, -2);
     scene.add(rimLight);
 
-    const bottomLight = new THREE.PointLight(0xffffff, 0.8, 10);
+    const bottomLight = new THREE.PointLight(0xffffff, 1.2, 10);
     bottomLight.position.set(0, -2, 2);
     scene.add(bottomLight);
 
@@ -78,9 +78,9 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
                 if (child.isMesh) {
                     if (child.material) {
                         child.material.color.set(0xffffff);
-                        child.material.emissive.set(0x222222); // Subtle glow to prevent black
-                        child.material.roughness = 0.2;
-                        child.material.metalness = 0.5;
+                        child.material.emissive.set(0x555555); // Większy blask własny, żeby zapobiec czarnym cieniom (było 0x222222)
+                        child.material.roughness = 0.1; // Bardziej gładkie, mocniejsze odbicia (było 0.2)
+                        child.material.metalness = 0.6; // Trochę bardziej metaliczne dla lepszego rozbłysku (było 0.5)
                     }
                 }
             });

@@ -284,6 +284,7 @@
         });
     }
 
+
     /* ═══════════════════════════════════════════════════════════
        HERO PARTICLE ANIMATION (Canvas)
        ═══════════════════════════════════════════════════════════ */
@@ -302,8 +303,9 @@
         let animationId;
 
         function resize() {
-            canvas.width = container.offsetWidth;
-            canvas.height = container.offsetHeight;
+            // Use window dimensions — container offsetWidth can be 0 if div has no block size
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
 
         function createParticles() {
@@ -657,9 +659,9 @@
                 name: 'Skarpa Bytom',
                 slug: 'skarpa',
                 type: 'System rezerwacji',
-                description: 'Platforma rejestracji uczestników z panelem zarządzania, systemem rezerwacji zajęć i zgodami RODO.',
+                description: 'System rezerwacji zajęć i zarządzania uczestnikami.',
                 type_en: 'Booking System',
-                description_en: 'Participant registration platform with management panel, class booking system and GDPR compliance.',
+                description_en: 'Class booking and participant management system.',
                 url: null,
                 favicon: 'skarpa.png',
             },
@@ -667,9 +669,9 @@
                 name: 'Studio Hypnagogia',
                 slug: 'hypnagogia',
                 type: 'Strona internetowa',
-                description: 'Profesjonalna strona studia nagraniowego z formularzem kontaktowym i optymalizacją SEO.',
+                description: 'Strona studia nagraniowego z optymalizacją SEO.',
                 type_en: 'Website',
-                description_en: 'Professional recording studio website with contact form and SEO optimization.',
+                description_en: 'Recording studio website with SEO optimization.',
                 url: 'https://hypnagogia.studio',
                 favicon: 'hypnagogia.png',
             },
@@ -700,42 +702,39 @@
         const isEn = currentLang === 'en';
         let cards = projects.map(p => buildProjectCard(p, isEn)).join('');
         
-        // Wypełniamy ekran, żeby przy małej liczbie projektów (np. 2) prawa strona nie była pusta.
-        // Gwarantujemy, że "bazowy" set ma co najmniej 10-12 elementów.
-        if (projects.length > 0 && projects.length < 12) {
-            const multiplier = Math.ceil(12 / projects.length);
+        // Wypełniamy ekran i duplikujemy, żeby karuzela mogła kręcić się w nieskończoność bez przeskoku
+        if (projects.length > 0 && projects.length < 6) {
+            const multiplier = Math.ceil(6 / projects.length);
             cards = cards.repeat(multiplier);
         }
         
-        container.innerHTML = cards;
+        // Podwajamy cały zestaw, żeby uzyskać idealny seamless infinite loop
+        container.innerHTML = cards + cards;
 
-        // Initialize drag-to-scroll
+        // Auto-scroll animation (Infinite Marquee)
         const wrapper = container.closest('.carousel-wrapper');
-        let isDown = false;
-        let startX;
-        let scrollLeft;
+        let currentScroll = 0;
+        let isHovered = false;
 
-        wrapper.addEventListener('mousedown', (e) => {
-            isDown = true;
-            wrapper.classList.add('active');
-            startX = e.pageX - wrapper.offsetLeft;
-            scrollLeft = wrapper.scrollLeft;
-        });
-        wrapper.addEventListener('mouseleave', () => {
-            isDown = false;
-            wrapper.classList.remove('active');
-        });
-        wrapper.addEventListener('mouseup', () => {
-            isDown = false;
-            wrapper.classList.remove('active');
-        });
-        wrapper.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - wrapper.offsetLeft;
-            const walk = (x - startX) * 2; // Scroll speed multiplier
-            wrapper.scrollLeft = scrollLeft - walk;
-        });
+        wrapper.addEventListener('mouseenter', () => isHovered = true);
+        wrapper.addEventListener('mouseleave', () => isHovered = false);
+
+        // Zapobiega wielokrotnym pętlom po re-renderze (np. zmianie języka)
+        if (wrapper.carouselAnimId) cancelAnimationFrame(wrapper.carouselAnimId);
+
+        function autoScroll() {
+            if (!isHovered) {
+                currentScroll += 0.6; // Prędkość kręcenia
+
+                // Kiedy przewiniemy dokładnie połowę zawartości (czyli pierwszy zduplikowany set), resetujemy do zera
+                if (currentScroll >= container.scrollWidth / 2) {
+                    currentScroll = 0;
+                }
+                wrapper.scrollLeft = currentScroll;
+            }
+            wrapper.carouselAnimId = requestAnimationFrame(autoScroll);
+        }
+        autoScroll();
     }
 
     function buildProjectCard(project, isEn) {

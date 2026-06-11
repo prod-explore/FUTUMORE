@@ -608,11 +608,12 @@ footer {
     mix-blend-mode: overlay;
 }
 
-/* Canvas for particle animation */
+/* Canvas for particle animation (stars) */
 .hero__canvas {
     position: absolute;
     inset: 0;
-    z-index: 0;
+    z-index: 1;
+    pointer-events: none;
 }
 
 .hero__content {
