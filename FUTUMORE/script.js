@@ -286,7 +286,8 @@
 
 
     /* ═══════════════════════════════════════════════════════════
-       HERO PARTICLE ANIMATION (Canvas)
+       HERO PARTICLE ANIMATION (Canvas) — Cinematic Star Field
+       Multi-layer stars · Twinkling · Glow halos · Shooting stars
        ═══════════════════════════════════════════════════════════ */
     function initHeroParticles() {
         const container = document.getElementById('hero-canvas');
@@ -298,78 +299,264 @@
 
         canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;';
 
-        let particles = [];
+        // ── Star layers ──────────────────────────────────────────
+        let stars = [];          // Main star field (3 depth layers)
+        let shootingStars = [];  // Occasional shooting stars
         let mouse = { x: -1000, y: -1000 };
+        let smoothMouse = { x: -1000, y: -1000 };
         let animationId;
+        let time = 0;
+
+        const isMobile = () => window.innerWidth < 768;
 
         function resize() {
-            // Use window dimensions — container offsetWidth can be 0 if div has no block size
             canvas.width  = window.innerWidth;
             canvas.height = window.innerHeight;
         }
 
-        function createParticles() {
-            particles = [];
-            const count = window.innerWidth < 768 ? CONFIG.PARTICLE_COUNT / 2 : CONFIG.PARTICLE_COUNT;
-            for (let i = 0; i < count; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.3,
-                    vy: (Math.random() - 0.5) * 0.3,
-                    size: Math.random() * 1.5 + 0.5,
-                    opacity: Math.random() * 0.3 + 0.1,
+        // ── Create multi-layer star field ────────────────────────
+        function createStars() {
+            stars = [];
+            const w = canvas.width;
+            const h = canvas.height;
+            const mobile = isMobile();
+
+            // Layer 0: Distant dust (many, tiny, dim)
+            const dustCount = mobile ? 60 : 140;
+            for (let i = 0; i < dustCount; i++) {
+                stars.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    baseSize: Math.random() * 0.8 + 0.3,
+                    baseOpacity: Math.random() * 0.15 + 0.05,
+                    twinkleSpeed: Math.random() * 0.008 + 0.003,
+                    twinkleOffset: Math.random() * Math.PI * 2,
+                    layer: 0,       // slowest parallax
+                    vx: (Math.random() - 0.5) * 0.08,
+                    vy: (Math.random() - 0.5) * 0.08,
+                });
+            }
+
+            // Layer 1: Medium stars (moderate count, visible)
+            const medCount = mobile ? 25 : 55;
+            for (let i = 0; i < medCount; i++) {
+                stars.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    baseSize: Math.random() * 1.2 + 0.8,
+                    baseOpacity: Math.random() * 0.35 + 0.15,
+                    twinkleSpeed: Math.random() * 0.015 + 0.005,
+                    twinkleOffset: Math.random() * Math.PI * 2,
+                    layer: 1,
+                    vx: (Math.random() - 0.5) * 0.15,
+                    vy: (Math.random() - 0.5) * 0.15,
+                });
+            }
+
+            // Layer 2: Feature stars (few, bright, with glow halos)
+            const featureCount = mobile ? 6 : 14;
+            for (let i = 0; i < featureCount; i++) {
+                stars.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    baseSize: Math.random() * 1.8 + 1.2,
+                    baseOpacity: Math.random() * 0.4 + 0.4,
+                    twinkleSpeed: Math.random() * 0.02 + 0.008,
+                    twinkleOffset: Math.random() * Math.PI * 2,
+                    layer: 2,       // fastest parallax
+                    vx: (Math.random() - 0.5) * 0.2,
+                    vy: (Math.random() - 0.5) * 0.2,
+                    haloSize: Math.random() * 8 + 6,  // glow radius
+                    pulseSpeed: Math.random() * 0.01 + 0.005,
                 });
             }
         }
 
-        function drawParticles() {
+        // ── Spawn a shooting star ────────────────────────────────
+        function spawnShootingStar() {
+            const w = canvas.width;
+            const h = canvas.height;
+            const angle = Math.random() * 0.6 + 0.3; // ~17°–52° downward
+            const speed = Math.random() * 6 + 4;
+
+            shootingStars.push({
+                x: Math.random() * w * 0.8,
+                y: Math.random() * h * 0.3,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 1.0,
+                decay: Math.random() * 0.012 + 0.008,
+                length: Math.random() * 60 + 40,
+                width: Math.random() * 1.5 + 0.8,
+            });
+        }
+
+        // ── Main render loop ─────────────────────────────────────
+        function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            time += 1;
 
-            particles.forEach((p, i) => {
-                p.x += p.vx;
-                p.y += p.vy;
+            // Smooth mouse interpolation
+            smoothMouse.x += (mouse.x - smoothMouse.x) * 0.05;
+            smoothMouse.y += (mouse.y - smoothMouse.y) * 0.05;
 
-                if (p.x < 0) p.x = canvas.width;
-                if (p.x > canvas.width) p.x = 0;
-                if (p.y < 0) p.y = canvas.height;
-                if (p.y > canvas.height) p.y = 0;
+            // Parallax offsets per layer (based on mouse)
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const mx = (smoothMouse.x - cx) / cx || 0; // -1 to 1
+            const my = (smoothMouse.y - cy) / cy || 0;
+            const parallax = [
+                { x: mx * 3,  y: my * 3  },   // layer 0: barely moves
+                { x: mx * 8,  y: my * 8  },   // layer 1: subtle
+                { x: mx * 15, y: my * 15 },   // layer 2: most movement
+            ];
 
+            // ── Draw stars ───────────────────────────────────────
+            for (let i = 0; i < stars.length; i++) {
+                const s = stars[i];
+
+                // Drift
+                s.x += s.vx;
+                s.y += s.vy;
+
+                // Wrap
+                if (s.x < -10) s.x = canvas.width + 10;
+                if (s.x > canvas.width + 10) s.x = -10;
+                if (s.y < -10) s.y = canvas.height + 10;
+                if (s.y > canvas.height + 10) s.y = -10;
+
+                // Twinkle
+                const twinkle = Math.sin(time * s.twinkleSpeed + s.twinkleOffset);
+                const opacity = s.baseOpacity + twinkle * s.baseOpacity * 0.5;
+                const size = s.baseSize + twinkle * s.baseSize * 0.25;
+
+                // Parallax position
+                const px = s.x + (parallax[s.layer]?.x || 0);
+                const py = s.y + (parallax[s.layer]?.y || 0);
+
+                // ── Glow halo for feature stars (layer 2) ────────
+                if (s.layer === 2 && s.haloSize) {
+                    const haloPulse = Math.sin(time * s.pulseSpeed + s.twinkleOffset) * 0.5 + 0.5;
+                    const haloRadius = s.haloSize + haloPulse * 4;
+                    const haloAlpha = opacity * 0.12 + haloPulse * 0.06;
+
+                    const grad = ctx.createRadialGradient(px, py, 0, px, py, haloRadius);
+                    grad.addColorStop(0, `rgba(255, 255, 255, ${haloAlpha})`);
+                    grad.addColorStop(0.4, `rgba(220, 230, 255, ${haloAlpha * 0.4})`);
+                    grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+                    ctx.beginPath();
+                    ctx.arc(px, py, haloRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                }
+
+                // ── Star core ────────────────────────────────────
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                ctx.arc(px, py, Math.max(size, 0.2), 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(opacity, 0)})`;
                 ctx.fill();
 
-                for (let j = i + 1; j < particles.length; j++) {
-                    const p2 = particles[j];
-                    const dx = p.x - p2.x;
-                    const dy = p.y - p2.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
+                // ── 4-point sparkle for brightest stars ──────────
+                if (s.layer === 2 && opacity > 0.5) {
+                    const sparkleLen = size * 3 + twinkle * 2;
+                    const sparkleAlpha = opacity * 0.3;
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${sparkleAlpha})`;
+                    ctx.lineWidth = 0.5;
+                    // Horizontal
+                    ctx.beginPath();
+                    ctx.moveTo(px - sparkleLen, py);
+                    ctx.lineTo(px + sparkleLen, py);
+                    ctx.stroke();
+                    // Vertical
+                    ctx.beginPath();
+                    ctx.moveTo(px, py - sparkleLen);
+                    ctx.lineTo(px, py + sparkleLen);
+                    ctx.stroke();
+                }
 
-                    if (dist < 120) {
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p2.x, p2.y);
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.04 * (1 - dist / 120)})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
+                // ── Constellation lines near mouse (layer 1 & 2) ─
+                if (s.layer >= 1) {
+                    const dmx = px - smoothMouse.x;
+                    const dmy = py - smoothMouse.y;
+                    const mouseDist = Math.sqrt(dmx * dmx + dmy * dmy);
+
+                    if (mouseDist < 180) {
+                        // Connect to nearby stars
+                        for (let j = i + 1; j < stars.length; j++) {
+                            const s2 = stars[j];
+                            if (s2.layer < 1) continue;
+                            const px2 = s2.x + (parallax[s2.layer]?.x || 0);
+                            const py2 = s2.y + (parallax[s2.layer]?.y || 0);
+                            const dx = px - px2;
+                            const dy = py - py2;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+
+                            if (dist < 140) {
+                                const lineAlpha = 0.06 * (1 - dist / 140) * (1 - mouseDist / 180);
+                                ctx.beginPath();
+                                ctx.moveTo(px, py);
+                                ctx.lineTo(px2, py2);
+                                ctx.strokeStyle = `rgba(255, 255, 255, ${lineAlpha})`;
+                                ctx.lineWidth = 0.4;
+                                ctx.stroke();
+                            }
+                        }
+
+                        // Mouse repulsion
+                        const force = (180 - mouseDist) / 180 * 0.015;
+                        s.vx += dmx * force;
+                        s.vy += dmy * force;
                     }
+
+                    // Damping
+                    s.vx *= 0.995;
+                    s.vy *= 0.995;
+                }
+            }
+
+            // ── Draw shooting stars ──────────────────────────────
+            for (let i = shootingStars.length - 1; i >= 0; i--) {
+                const ss = shootingStars[i];
+                ss.x += ss.vx;
+                ss.y += ss.vy;
+                ss.life -= ss.decay;
+
+                if (ss.life <= 0) {
+                    shootingStars.splice(i, 1);
+                    continue;
                 }
 
-                const dmx = p.x - mouse.x;
-                const dmy = p.y - mouse.y;
-                const mouseDist = Math.sqrt(dmx * dmx + dmy * dmy);
-                if (mouseDist < 150) {
-                    const force = (150 - mouseDist) / 150 * 0.02;
-                    p.vx += dmx * force;
-                    p.vy += dmy * force;
-                }
+                // Trail gradient
+                const tailX = ss.x - (ss.vx / Math.sqrt(ss.vx * ss.vx + ss.vy * ss.vy)) * ss.length * ss.life;
+                const tailY = ss.y - (ss.vy / Math.sqrt(ss.vx * ss.vx + ss.vy * ss.vy)) * ss.length * ss.life;
 
-                p.vx *= 0.99;
-                p.vy *= 0.99;
-            });
+                const grad = ctx.createLinearGradient(tailX, tailY, ss.x, ss.y);
+                grad.addColorStop(0, `rgba(255, 255, 255, 0)`);
+                grad.addColorStop(0.7, `rgba(255, 255, 255, ${ss.life * 0.3})`);
+                grad.addColorStop(1, `rgba(255, 255, 255, ${ss.life * 0.8})`);
 
-            animationId = requestAnimationFrame(drawParticles);
+                ctx.beginPath();
+                ctx.moveTo(tailX, tailY);
+                ctx.lineTo(ss.x, ss.y);
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = ss.width * ss.life;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                // Bright head
+                ctx.beginPath();
+                ctx.arc(ss.x, ss.y, ss.width * ss.life * 1.5, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${ss.life * 0.9})`;
+                ctx.fill();
+            }
+
+            // ── Randomly spawn shooting stars ────────────────────
+            if (Math.random() < 0.003) { // ~every 5-6 seconds on average
+                spawnShootingStar();
+            }
+
+            animationId = requestAnimationFrame(draw);
         }
 
         document.addEventListener('mousemove', (e) => {
@@ -383,21 +570,19 @@
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 resize();
-                createParticles();
+                createStars();
             }, 200);
         });
 
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
         resize();
-        createParticles();
-        drawParticles();
+        createStars();
+        draw();
 
         const heroSection = document.getElementById('hero');
         if (heroSection) {
             const heroObserver = new IntersectionObserver(([entry]) => {
                 if (entry.isIntersecting) {
-                    if (!animationId) drawParticles();
+                    if (!animationId) draw();
                 } else {
                     cancelAnimationFrame(animationId);
                     animationId = null;
