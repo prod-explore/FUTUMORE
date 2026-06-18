@@ -552,6 +552,14 @@ footer {
     pointer-events: none;
 }
 
+/* Canvas for particle animation (stars) */
+.hero__canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
 .hero__gradient-orb--1 {
     width: 600px;
     height: 600px;
