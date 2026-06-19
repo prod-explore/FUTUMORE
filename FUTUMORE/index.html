@@ -190,8 +190,8 @@
 
         <div class="hero__content">
             <h1 class="hero__title anim-fade-up anim-delay-1">
-                <span data-i18n="hero_title_1">Agregujemy Twój biznes</span><br>
-                <span class="hero__title-accent" data-i18n="hero_title_2">w przyszłość</span>
+                <span data-i18n="hero_title_1">Technologia z przyszłości.</span><br>
+                <span class="hero__title-accent" data-i18n="hero_title_2">Wyniki na już.</span>
             </h1>
         </div>
 
@@ -251,9 +251,7 @@
                             </svg>
                         </div>
                         <h3 class="solution-card__title" data-i18n="sol1_title">Dedykowane Systemy</h3>
-                        <p class="solution-card__desc" data-i18n="sol1_desc">Kompleksowe systemy IT z integracjami —
-                            rezerwacje, CRM, e-commerce, bramki płatności, AI, automatyzacja procesów, smart space.
-                            Wszystko szyte na miarę Twojej firmy — od strony po pełną platformę.</p>
+                        <p class="solution-card__desc" data-i18n="sol1_desc">Tworzymy systemy IT w jednym, konkretnym celu: aby drastycznie oszczędzać Twój czas, ciąć koszty operacyjne i aktywnie maksymalizować przychody Twojej firmy.</p>
                         <div class="solution-card__stat">
                             <span class="solution-card__stat-icon">⚙️</span>
                             <span class="solution-card__stat-label" data-i18n="sol1_stat">Pełna digitalizacja
@@ -277,9 +275,7 @@
                             </svg>
                         </div>
                         <h3 class="solution-card__title" data-i18n="sol2_title">Gotowe Produkty</h3>
-                        <p class="solution-card__desc" data-i18n="sol2_desc">Hardware, gadżety i aplikacje gotowe do
-                            wdrożenia — wizytówki NFC, systemy przywoławcze, smart oświetlenie, platformy SaaS,
-                            aplikacje e-commerce. Druk 3D + ESP32 + nowoczesny software.</p>
+                        <p class="solution-card__desc" data-i18n="sol2_desc">Autorskie narzędzia, inteligentne gadżety i gotowe aplikacje, które natychmiastowo podnoszą prestiż Twojej marki. Zobacz rozwiązania, z których na co dzień korzystamy we własnej agencji.</p>
                         <div class="solution-card__stat">
                             <span class="solution-card__stat-icon">🔧</span>
                             <span class="solution-card__stat-label" data-i18n="sol2_stat">Produkty, które
@@ -292,6 +288,36 @@
         </section>
 
         <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <!-- TRUSTED BY / PORTFOLIO — INFINITE CAROUSEL            -->
+        <!-- ═══════════════════════════════════════════════════════ -->
+        <section id="portfolio" class="section section--portfolio" aria-labelledby="portfolio-heading">
+            <div class="container">
+                <div class="section__header anim-reveal">
+                    <span class="section__tag" data-i18n="portfolio_tag">Portfolio</span>
+                    <h2 id="portfolio-heading" class="section__title">
+                        <span data-i18n="portfolio_title_1">Zaufali Nam</span> <span class="text-accent"
+                            data-i18n="portfolio_title_2">Innowatorzy</span>
+                    </h2>
+                    <p class="section__desc" data-i18n="portfolio_desc">
+                        Od startupów po działające firmy — nasze rozwiązania napędzają biznesy, które myślą o
+                        przyszłości.
+                    </p>
+                </div>
+            </div>
+
+
+
+            <!-- Row 2: Real projects (scrolls right) — loaded dynamically -->
+            <div class="carousel-wrapper carousel-wrapper--projects" aria-label="Karuzela zrealizowanych projektów">
+                <div class="carousel-track">
+                    <div class="carousel-row carousel-row--right" id="projects-carousel">
+                        <!-- Loaded dynamically from portfolio/projects/projects.json -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- SALES SECTION 2 — WYNIKI & LICZBY                     -->
         <!-- ═══════════════════════════════════════════════════════ -->
         <section id="results" class="section section--results" aria-labelledby="results-heading">
@@ -351,36 +377,6 @@
                 </div>
 
 
-            </div>
-        </section>
-
-        <!-- ═══════════════════════════════════════════════════════ -->
-        <!-- TRUSTED BY / PORTFOLIO — INFINITE CAROUSEL            -->
-        <!-- ═══════════════════════════════════════════════════════ -->
-        <section id="portfolio" class="section section--portfolio" aria-labelledby="portfolio-heading">
-            <div class="container">
-                <div class="section__header anim-reveal">
-                    <span class="section__tag" data-i18n="portfolio_tag">Portfolio</span>
-                    <h2 id="portfolio-heading" class="section__title">
-                        <span data-i18n="portfolio_title_1">Zaufali Nam</span> <span class="text-accent"
-                            data-i18n="portfolio_title_2">Innowatorzy</span>
-                    </h2>
-                    <p class="section__desc" data-i18n="portfolio_desc">
-                        Od startupów po działające firmy — nasze rozwiązania napędzają biznesy, które myślą o
-                        przyszłości.
-                    </p>
-                </div>
-            </div>
-
-
-
-            <!-- Row 2: Real projects (scrolls right) — loaded dynamically -->
-            <div class="carousel-wrapper carousel-wrapper--projects" aria-label="Karuzela zrealizowanych projektów">
-                <div class="carousel-track">
-                    <div class="carousel-row carousel-row--right" id="projects-carousel">
-                        <!-- Loaded dynamically from portfolio/projects/projects.json -->
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -498,6 +494,13 @@
                                 <input type="text" name="website" id="contact-website" tabindex="-1" autocomplete="off">
                             </div>
                             <input type="hidden" name="_t" id="contact-timestamp" value="">
+                            
+                            <div class="contact-form__field" style="margin-top: 10px; margin-bottom: 20px;">
+                                <label style="display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--c-gray-400); cursor: pointer; line-height: 1.4;">
+                                    <input type="checkbox" required style="margin-top: 3px; accent-color: var(--c-accent);">
+                                    <span>Akceptuję <a href="/privacy" style="color: var(--c-white); text-decoration: underline;">Politykę Prywatności</a> i wyrażam zgodę na przetwarzanie danych w celu obsługi zapytania.</span>
+                                </label>
+                            </div>
 
                             <button type="submit" class="btn btn--primary btn--full" id="contact-submit">
                                 <span class="btn__text" data-i18n="form_submit">Umów Bezpłatną Konsultację</span>

@@ -2,6 +2,7 @@
     {
         "name": "Fantastyczne Wspinanie",
         "slug": "skarpa",
+        "category": "system",
         "type": "System rezerwacji zajęć",
         "description": "System rezerwacji zajęć i zarządzania uczestnikami.",
         "type_en": "Booking System",
@@ -12,6 +13,7 @@
     {
         "name": "Studio Hypnagogia",
         "slug": "hypnagogia",
+        "category": "system",
         "type": "Digital assets ecommerce",
         "description": "Platforma e-commerce dla cyfrowych produktów.",
         "type_en": "Digital assets ecommerce",
@@ -22,6 +24,7 @@
     {
         "name": "Nextouch",
         "slug": "nextouch",
+        "category": "product",
         "type": "System bezprzewodowego sterowania",
         "description": "Zdalne sterowanie PC za pomocą smartfona (WebSockets).",
         "type_en": "Wireless Control System",

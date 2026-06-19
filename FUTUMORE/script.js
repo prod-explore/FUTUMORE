@@ -26,8 +26,8 @@
             nav_cta: 'Book a Call',
             // Hero
             hero_badge: 'Business IT Solutions',
-            hero_title_1: 'Aggregating your business',
-            hero_title_2: 'into the future',
+            hero_title_1: 'Technology from the future.',
+            hero_title_2: 'Results for today.',
             hero_subtitle: 'We design and implement technologies that become a real lever for your company\'s growth. We automate processes, optimize costs, and deliver systems that scale business based on hard data.',
             hero_cta_primary: 'Book a Free Call',
             hero_cta_secondary: 'See Solutions',
@@ -38,10 +38,10 @@
             solutions_title_2: 'Our Solution',
             solutions_desc: "You're losing time and money on things that could work for you. You're losing customers due to lack of communication and an intuitive sales platform. We build technology that optimizes your company's costs and processes — tailored, not off-the-shelf.",
             sol1_title: 'Dedicated Systems',
-            sol1_desc: 'Comprehensive IT systems with integrations — bookings, CRM, e-commerce, payment gateways, AI, process automation, smart space. Everything tailored to your business — from a website to a full platform.',
+            sol1_desc: 'We build IT systems with one specific goal: to drastically save your time, cut operational costs, and actively maximize your company\'s revenue.',
             sol1_stat: 'Full business digitization',
             sol2_title: 'Ready Products',
-            sol2_desc: 'Hardware, gadgets and apps ready to deploy — NFC business cards, buzzer systems, smart lighting, SaaS platforms, e-commerce apps. 3D printing + ESP32 + modern software.',
+            sol2_desc: 'Custom tools, smart gadgets, and ready-made applications that instantly elevate your brand\'s prestige. Discover the solutions we use daily in our own agency.',
             sol2_stat: 'Products that stand out',
             // Results
             results_tag: 'Proof',
@@ -855,6 +855,7 @@
             {
                 name: 'Skarpa Bytom',
                 slug: 'skarpa',
+                category: 'system',
                 type: 'System rezerwacji',
                 description: 'System rezerwacji zajęć i zarządzania uczestnikami.',
                 type_en: 'Booking System',
@@ -865,6 +866,7 @@
             {
                 name: 'Studio Hypnagogia',
                 slug: 'hypnagogia',
+                category: 'system',
                 type: 'Strona internetowa',
                 description: 'Strona studia nagraniowego z optymalizacją SEO.',
                 type_en: 'Website',
@@ -881,12 +883,16 @@
             })
             .then(projects => {
                 projectsData = projects;
-                renderProjectCards(container, projectsData);
+                const category = container.getAttribute('data-category');
+                const filteredData = category ? projectsData.filter(p => p.category === category) : projectsData;
+                renderProjectCards(container, filteredData);
             })
             .catch(() => {
                 // Fallback: use inline data (works on file:// without a server)
                 projectsData = INLINE_PROJECTS;
-                renderProjectCards(container, projectsData);
+                const category = container.getAttribute('data-category');
+                const filteredData = category ? projectsData.filter(p => p.category === category) : projectsData;
+                renderProjectCards(container, filteredData);
             });
     }
 
