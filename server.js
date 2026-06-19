@@ -493,14 +493,20 @@ app.all('/api/*', (_req, res) => {
     res.status(404).json({ error: 'Endpoint nie istnieje.' });
 });
 
-/* ─── SERVICE LANDING PAGES ─────────────────────────────────── */
-const SERVICE_PAGES = ['systems', 'ai', 'smart-space', 'hardware'];
-
-SERVICE_PAGES.forEach(page => {
-    app.get(`/services/${page}`, (_req, res) => {
-        res.sendFile(path.join(__dirname, 'FUTUMORE', 'services', `${page}.html`));
-    });
+/* ─── MAIN LANDING PAGES ───────────────────────────────────── */
+app.get('/systems', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'FUTUMORE', 'systems.html'));
 });
+
+app.get('/products', (_req, res) => {
+    res.sendFile(path.join(__dirname, 'FUTUMORE', 'products.html'));
+});
+
+/* ─── 301 REDIRECTS (old service URLs → new) ───────────────── */
+app.get('/services/systems', (_req, res) => res.redirect(301, '/systems'));
+app.get('/services/hardware', (_req, res) => res.redirect(301, '/products'));
+app.get('/services/ai', (_req, res) => res.redirect(301, '/systems'));
+app.get('/services/smart-space', (_req, res) => res.redirect(301, '/systems'));
 
 /* ─── SPA FALLBACK ──────────────────────────────────────────── */
 app.get('*', (_req, res) => {

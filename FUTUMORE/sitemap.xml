@@ -6,17 +6,20 @@
         <xhtml:link rel="alternate" hreflang="pl" href="https://futumore.pl/"/>
         <xhtml:link rel="alternate" hreflang="en" href="https://futumore.pl/?lang=en"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://futumore.pl/"/>
-        <lastmod>2026-04-21</lastmod>
+        <lastmod>2026-06-19</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
-    <!-- Campaign subpages will be added here as they are created -->
-    <!-- Example:
     <url>
-        <loc>https://futumore.pl/campaigns/project-name</loc>
-        <lastmod>2026-04-21</lastmod>
+        <loc>https://futumore.pl/systems</loc>
+        <lastmod>2026-06-19</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
+        <priority>0.9</priority>
     </url>
-    -->
+    <url>
+        <loc>https://futumore.pl/products</loc>
+        <lastmod>2026-06-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
 </urlset>

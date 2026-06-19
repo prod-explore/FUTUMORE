@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pl" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dedykowane Systemy — FUTUMORE</title>
+    <meta name="description" content="Projektujemy i wdrażamy dedykowane systemy IT szyte na miarę Twojego biznesu. Rezerwacje, CRM, e-commerce, płatności, automatyzacja, AI.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://futumore.pl/systems">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Dedykowane Systemy — FUTUMORE">
+    <meta property="og:description" content="Dedykowane systemy IT z integracjami. Rezerwacje, CRM, panele zarządzania, bramki płatności, AI, automatyzacja.">
+    <meta property="og:url" content="https://futumore.pl/systems">
+    <meta property="og:image" content="https://futumore.pl/og-image.png">
+    <link rel="icon" type="image/png" href="/logo-white-stable.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/services/services.css">
+    <link rel="stylesheet" href="/services/services-v2.css">
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="service-nav" id="service-nav">
+        <div class="service-nav__inner">
+            <a href="/" class="service-nav__back">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+                Powrót
+            </a>
+            <a href="/" class="service-nav__brand">
+                <img src="/logo-white.png" alt="FUTUMORE" width="36" height="36">
+                <span>FUTUMORE</span>
+            </a>
+            <a href="/#contact" class="service-nav__cta">Umów Rozmowę</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="service-hero">
+        <div class="service-hero__bg"></div>
+        <div class="service-hero__grid"></div>
+        <div class="service-hero__content" style="max-width: 900px;">
+
+            <h1 class="service-hero__title srv-anim">
+                Jeden system<br>
+                <span class="service-hero__title-accent">Wiele możliwości.</span>
+            </h1>
+            <p class="service-hero__subtitle srv-anim">
+                Znajdziemy u Ciebie przestrzeń do optymalizacji i stworzymy idealne rozwiązanie.
+            </p>
+            <div class="service-hero__actions srv-anim">
+                <a href="#ecosystem" class="btn btn--primary">
+                    <span>Zobacz Ekosystem</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+                <a href="#cta" class="btn btn--ghost"><span>Umów Konsultację</span></a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ORBITAL ECOSYSTEM -->
+        <section id="ecosystem" class="service-section service-section--dark">
+            <div class="container">
+                <div class="service-section__header srv-anim">
+                    <span class="service-section__tag">Ekosystem</span>
+                    <h2 class="service-section__title">Więcej Czasu, <span class="text-accent">Większy Zysk</span></h2>
+                    <p class="service-section__desc">Automatyzacja procesów, drastyczne cięcie kosztów i system, który bez przerwy łapie dla Ciebie nowych klientów.</p>
+                </div>
+
+                <!-- Network Graph -->
+                <div class="netgraph srv-anim" id="netgraph">
+                    <svg class="netgraph__svg" viewBox="0 0 800 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g class="netgraph__lines">
+                            <line class="netgraph__line" data-from="hub" data-to="bookings" x1="400" y1="210" x2="130" y2="90"/>
+                            <line class="netgraph__line" data-from="hub" data-to="ecommerce" x1="400" y1="210" x2="130" y2="210"/>
+                            <line class="netgraph__line" data-from="hub" data-to="payments" x1="400" y1="210" x2="130" y2="330"/>
+                            <line class="netgraph__line" data-from="hub" data-to="ai" x1="400" y1="210" x2="670" y2="90"/>
+                            <line class="netgraph__line" data-from="hub" data-to="crm" x1="400" y1="210" x2="670" y2="210"/>
+                            <line class="netgraph__line" data-from="hub" data-to="api" x1="400" y1="210" x2="670" y2="330"/>
+                            <line class="netgraph__line netgraph__line--sub" data-from="bookings" data-to="payments" x1="130" y1="90" x2="130" y2="330"/>
+                            <line class="netgraph__line netgraph__line--sub" data-from="ecommerce" data-to="payments" x1="130" y1="210" x2="130" y2="330"/>
+                            <line class="netgraph__line netgraph__line--sub" data-from="ai" data-to="crm" x1="670" y1="90" x2="670" y2="210"/>
+                            <line class="netgraph__line netgraph__line--sub" data-from="crm" data-to="api" x1="670" y1="210" x2="670" y2="330"/>
+                        </g>
+                        <g class="netgraph__pulses">
+                            <circle r="3" fill="white" opacity="0"><animateMotion dur="2.5s" repeatCount="indefinite" path="M400,210 L130,90"/><animate attributeName="opacity" values="0;0.8;0" dur="2.5s" repeatCount="indefinite"/></circle>
+                            <circle r="3" fill="white" opacity="0"><animateMotion dur="3s" repeatCount="indefinite" path="M130,210 L400,210"/><animate attributeName="opacity" values="0;0.8;0" dur="3s" repeatCount="indefinite"/></circle>
+                            <circle r="3" fill="white" opacity="0"><animateMotion dur="2.8s" repeatCount="indefinite" path="M400,210 L670,90"/><animate attributeName="opacity" values="0;0.8;0" dur="2.8s" repeatCount="indefinite"/></circle>
+                            <circle r="3" fill="white" opacity="0"><animateMotion dur="3.2s" repeatCount="indefinite" path="M670,330 L400,210"/><animate attributeName="opacity" values="0;0.8;0" dur="3.2s" repeatCount="indefinite"/></circle>
+                            <circle r="2.5" fill="white" opacity="0"><animateMotion dur="2s" repeatCount="indefinite" path="M130,330 L400,210"/><animate attributeName="opacity" values="0;0.6;0" dur="2s" repeatCount="indefinite"/></circle>
+                            <circle r="2.5" fill="white" opacity="0"><animateMotion dur="2.2s" repeatCount="indefinite" path="M400,210 L670,210"/><animate attributeName="opacity" values="0;0.6;0" dur="2.2s" repeatCount="indefinite"/></circle>
+                        </g>
+                    </svg>
+                    <div class="netgraph__node netgraph__node--hub" data-id="hub" style="left:50%;top:50%;">
+                        <div class="netgraph__node-glow"></div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><circle cx="6" cy="6" r="1"/><circle cx="6" cy="18" r="1"/></svg>
+                        <span>Jeden System</span>
+                    </div>
+                    <div class="netgraph__node" data-id="bookings" style="left:16.25%;top:21.4%;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                        <span>Rezerwacje</span>
+                    </div>
+                    <div class="netgraph__node" data-id="ecommerce" style="left:16.25%;top:50%;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                        <span>E-Commerce</span>
+                    </div>
+                    <div class="netgraph__node" data-id="payments" style="left:16.25%;top:78.6%;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>
+                        <span>Płatności</span>
+                    </div>
+                    <div class="netgraph__node" data-id="ai" style="left:83.75%;top:21.4%;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 8V4H8"/><rect x="2" y="2" width="20" height="20" rx="5"/><path d="m15 11-3 3-2-2"/></svg>
+                        <span>AI Agent</span>
+                    </div>
+                    <div class="netgraph__node" data-id="crm" style="left:83.75%;top:50%;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                        <span>CRM & Panel</span>
+                    </div>
+                    <div class="netgraph__node" data-id="api" style="left:83.75%;top:78.6%;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                        <span>Integracje</span>
+                    </div>
+                </div>
+
+                <!-- Module Grid -->
+                <div class="mod-grid srv-anim">
+                    <div class="mod-card">
+                        <div class="mod-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+                        <h3 class="mod-card__title">Rezerwacje & Kalendarz</h3>
+                        <p class="mod-card__desc">Zero podwójnych rezerwacji. Automatyczne SMS-y i płatności z góry eliminują no-shows.</p>
+                    </div>
+                    <div class="mod-card">
+                        <div class="mod-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+                        <h3 class="mod-card__title">Zamówienia & E-Commerce</h3>
+                        <p class="mod-card__desc">Koszyk zoptymalizowany pod konwersję. Integracja z magazynem skraca obsługę o połowę.</p>
+                    </div>
+                    <div class="mod-card">
+                        <div class="mod-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg></div>
+                        <h3 class="mod-card__title">Bramki Płatności</h3>
+                        <p class="mod-card__desc">Płynne płatności globalnie i lokalnie. Automatyczne faktury i modele subskrypcyjne.</p>
+                    </div>
+                    <div class="mod-card">
+                        <div class="mod-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect x="2" y="2" width="20" height="20" rx="5"/><path d="m15 11-3 3-2-2"/></svg></div>
+                        <h3 class="mod-card__title">AI & Automatyzacja</h3>
+                        <p class="mod-card__desc">Chatboty rozwiązują 80% zapytań w czasie rzeczywistym. Twoja firma działa 24/7.</p>
+                    </div>
+                    <div class="mod-card">
+                        <div class="mod-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                        <h3 class="mod-card__title">Panel & CRM</h3>
+                        <p class="mod-card__desc">Wszystkie dane, historia i KPI na jednym ekranie. Decyzje na faktach, nie intuicji.</p>
+                    </div>
+                    <div class="mod-card">
+                        <div class="mod-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+                        <h3 class="mod-card__title">Integracje API</h3>
+                        <p class="mod-card__desc">Łączymy nowe z obecnym. Płynna wymiana danych — zero podwójnego wpisywania.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Dlaczego My / Korzyści -->
+        <section class="service-section">
+            <div class="container">
+                <div class="service-section__header srv-anim">
+                    <span class="service-section__tag">Korzyści</span>
+                    <h2 class="service-section__title">Więcej Niż <span class="text-accent">Aplikacja</span></h2>
+                </div>
+                <div class="pillars srv-anim">
+                    <div class="pillar">
+                        <div class="pillar__icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                        <h3 class="pillar__title">Opieka i Rozwój</h3>
+                        <p class="pillar__desc">Nie zostawiamy Cię po wdrożeniu. Monitorujemy, aktualizujemy i rozwijamy system razem z Twoim biznesem.</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar__icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                        </div>
+                        <h3 class="pillar__title">Głębokie Zrozumienie</h3>
+                        <p class="pillar__desc">Nie tworzymy technologii dla samej technologii. Rozwiązujemy konkretne problemy na poziomie procesów w Twojej firmie.</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar__icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </div>
+                        <h3 class="pillar__title">Twój Biznes 24/7</h3>
+                        <p class="pillar__desc">System działa bez przerwy — przyjmuje płatności, obsługuje zamówienia i wspiera klientów, nawet kiedy Ty śpisz.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROCESS TIMELINE -->
+        <section class="service-section">
+            <div class="container">
+                <div class="service-section__header srv-anim">
+                    <span class="service-section__tag">Proces</span>
+                    <h2 class="service-section__title">Od Pomysłu do <span class="text-accent">Gotowego Systemu</span></h2>
+                </div>
+                <div class="m-timeline srv-anim">
+                    <div class="m-timeline__line"><div class="m-timeline__line-fill" id="timeline-fill"></div></div>
+                    <div class="m-timeline__step">
+                        <div class="m-timeline__dot"></div>
+                        <div class="m-timeline__num">01</div>
+                        <h3 class="m-timeline__title">Konsultacja</h3>
+                        <p class="m-timeline__desc">Bezpłatna rozmowa online. Ustalamy zakres, cel i oczekiwany efekt. Bez zobowiązań.</p>
+                    </div>
+                    <div class="m-timeline__step">
+                        <div class="m-timeline__dot"></div>
+                        <div class="m-timeline__num">02</div>
+                        <h3 class="m-timeline__title">Realizacja</h3>
+                        <p class="m-timeline__desc">Budujemy w ciągłym kontakcie. Widzisz postępy, komentujesz, dopasowujemy.</p>
+                    </div>
+                    <div class="m-timeline__step">
+                        <div class="m-timeline__dot"></div>
+                        <div class="m-timeline__num">03</div>
+                        <h3 class="m-timeline__title">Wdrożenie</h3>
+                        <p class="m-timeline__desc">Publikujemy i startujemy. Zostajemy z Tobą — monitoring, wsparcie i rozwój.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section id="cta" class="smart-cta">
+            <div class="smart-cta__glow"></div>
+            <div class="container">
+                <div class="smart-cta__content glass srv-anim">
+                    <h2 class="smart-cta__title">Masz pomysł na system?<br><span class="text-accent">Porozmawiajmy.</span></h2>
+                    <p class="smart-cta__desc">Zostaw numer lub email — odezwiemy się w ciągu 24h. Bez zobowiązań.</p>
+                    <form class="smart-cta__form" id="quick-contact-form">
+                        <input type="text" class="smart-cta__input" id="quick-contact-input" placeholder="+48 ___ ___ ___ lub email@firma.pl" required autocomplete="tel">
+                        <button type="submit" class="smart-cta__submit" id="quick-contact-submit">Zostaw kontakt →</button>
+                    </form>
+                    <div class="smart-cta__status" id="quick-contact-status"></div>
+                    <div class="smart-cta__divider">lub napisz bezpośrednio</div>
+                    <div class="smart-cta__direct">
+                        <a href="mailto:contact@hello.futumore.pl" class="smart-cta__link">📧 contact@hello.futumore.pl</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="service-footer">
+        <div class="service-footer__inner">
+            <p class="service-footer__copy">&copy; 2026 FUTUMORE. Wszelkie prawa zastrzeżone.</p>
+            <div class="service-footer__links">
+                <a href="/">Strona Główna</a>
+                <a href="/products">Produkty</a>
+                <a href="/#contact">Kontakt</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    (() => {
+        'use strict';
+
+        // Nav scroll
+        const nav = document.getElementById('service-nav');
+        if (nav) {
+            window.addEventListener('scroll', () => {
+                nav.classList.toggle('scrolled', window.scrollY > 50);
+            }, { passive: true });
+        }
+
+        // Scroll animations
+        const animEls = document.querySelectorAll('.srv-anim');
+        if (animEls.length) {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+            animEls.forEach(el => obs.observe(el));
+        }
+
+        // Counter animation
+        const counters = document.querySelectorAll('.counter');
+        if (counters.length) {
+            const cObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        const el = e.target;
+                        const target = +el.dataset.target;
+                        const dur = 1500;
+                        const start = performance.now();
+                        const step = (now) => {
+                            const p = Math.min((now - start) / dur, 1);
+                            const ease = 1 - Math.pow(1 - p, 3);
+                            el.textContent = Math.round(target * ease);
+                            if (p < 1) requestAnimationFrame(step);
+                        };
+                        requestAnimationFrame(step);
+                        cObs.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+            counters.forEach(c => cObs.observe(c));
+        }
+
+        // Timeline fill
+        const tFill = document.getElementById('timeline-fill');
+        if (tFill) {
+            const tObs = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { tFill.classList.add('animated'); tObs.unobserve(e.target); }
+                });
+            }, { threshold: 0.3 });
+            tObs.observe(tFill);
+        }
+
+        // Network graph hover interaction
+        const netgraph = document.getElementById('netgraph');
+        if (netgraph) {
+            const nodes = netgraph.querySelectorAll('.netgraph__node');
+            const lines = netgraph.querySelectorAll('.netgraph__line');
+            nodes.forEach(node => {
+                node.addEventListener('mouseenter', () => {
+                    const id = node.dataset.id;
+                    netgraph.classList.add('hover-active');
+                    node.classList.add('highlight');
+                    const hub = netgraph.querySelector('[data-id="hub"]');
+                    if (hub) hub.classList.add('highlight');
+                    lines.forEach(line => {
+                        if (line.dataset.from === id || line.dataset.to === id) {
+                            line.classList.add('highlight');
+                            const otherId = line.dataset.from === id ? line.dataset.to : line.dataset.from;
+                            const other = netgraph.querySelector('[data-id="' + otherId + '"]');
+                            if (other) other.classList.add('highlight');
+                        }
+                    });
+                });
+                node.addEventListener('mouseleave', () => {
+                    netgraph.classList.remove('hover-active');
+                    netgraph.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
+                });
+            });
+        }
+
+        // Quick contact form
+        const form = document.getElementById('quick-contact-form');
+        const input = document.getElementById('quick-contact-input');
+        const status = document.getElementById('quick-contact-status');
+        const submitBtn = document.getElementById('quick-contact-submit');
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const value = input.value.trim();
+                if (!value) return;
+                const isEmail = value.includes('@');
+                const payload = {
+                    name: 'Quick Contact — Systems',
+                    message: 'Szybki kontakt ze strony /systems',
+                    phone: isEmail ? '' : value,
+                    email: isEmail ? value : 'brak@futumore.pl',
+                };
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Wysyłam...';
+                try {
+                    const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!res.ok) throw new Error('fail');
+                    status.className = 'smart-cta__status success';
+                    status.textContent = '✓ Otrzymaliśmy Twój kontakt. Odezwiemy się wkrótce!';
+                    input.value = '';
+                } catch {
+                    status.className = 'smart-cta__status error';
+                    status.textContent = 'Coś poszło nie tak. Napisz do nas bezpośrednio na email.';
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Zostaw kontakt →';
+                    setTimeout(() => { status.style.display = 'none'; status.className = 'smart-cta__status'; }, 6000);
+                }
+            });
+        }
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', function(e) {
+                const t = document.querySelector(this.getAttribute('href'));
+                if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            });
+        });
+    })();
+    </script>
+
+</body>
+</html>

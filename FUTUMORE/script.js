@@ -9,7 +9,7 @@
     /* ─── CONFIGURATION ──────────────────────────────────────── */
     const CONFIG = {
         RESEND_ENDPOINT: '/api/contact',
-        EMAIL_TO: 'futumore.solutions@gmail.com', // mailto: fallback only
+        EMAIL_TO: 'contact@hello.futumore.pl', // mailto: fallback only
         PARTICLE_COUNT: 80,
         COUNTER_DURATION: 2000,
         NAV_SCROLL_THRESHOLD: 50,
@@ -19,10 +19,10 @@
     const TRANSLATIONS = {
         en: {
             // Nav
-            nav_solutions: 'Solutions',
+            nav_systems: 'Dedicated Systems',
+            nav_products: 'Products',
             nav_results: 'Results',
             nav_portfolio: 'Portfolio',
-            nav_process: 'Process',
             nav_cta: 'Book a Call',
             // Hero
             hero_badge: 'Business IT Solutions',
@@ -37,18 +37,12 @@
             solutions_title_1: 'Your Problem,',
             solutions_title_2: 'Our Solution',
             solutions_desc: "You're losing time and money on things that could work for you. You're losing customers due to lack of communication and an intuitive sales platform. We build technology that optimizes your company's costs and processes — tailored, not off-the-shelf.",
-            sol1_title: 'Sites, Systems & Apps',
-            sol1_desc: 'Comprehensive web systems with integrations — bookings, calendar, orders, payment gateways, CRM, process automation. Everything tailored to your business.',
+            sol1_title: 'Dedicated Systems',
+            sol1_desc: 'Comprehensive IT systems with integrations — bookings, CRM, e-commerce, payment gateways, AI, process automation, smart space. Everything tailored to your business — from a website to a full platform.',
             sol1_stat: 'Full business digitization',
-            sol2_title: 'AI Brain',
-            sol2_desc: 'A private AI brain for your company. Agent systems, knowledge automation, integration with business processes. Your company thinks faster than the competition.',
-            sol2_stat: 'Intelligence at your fingertips',
-            sol3_title: 'Smart Space',
-            sol3_desc: 'Intelligent infrastructure for home and office. AI monitoring, access control, IoT sensors, central dashboard — full control over your space.',
-            sol3_stat: 'A space that thinks for you',
-            sol4_title: 'Custom Hardware',
-            sol4_desc: 'Custom-made physical gadgets — NFC business cards, restaurant buzzers, locker cards, custom LED lights, company neons. 3D printing + ESP32.',
-            sol4_stat: 'Hardware that stands out',
+            sol2_title: 'Ready Products',
+            sol2_desc: 'Hardware, gadgets and apps ready to deploy — NFC business cards, buzzer systems, smart lighting, SaaS platforms, e-commerce apps. 3D printing + ESP32 + modern software.',
+            sol2_stat: 'Products that stand out',
             // Results
             results_tag: 'Proof',
             results_title_1: 'Numbers Speak',
@@ -96,11 +90,9 @@
             form_submit: 'Book Free Consultation',
             // Footer
             footer_tagline: 'IT Solutions<br>tailored to your business.',
-            footer_col1_title: 'Solutions',
-            footer_link1: 'Sites, Systems & Apps',
-            footer_link2: 'AI Brain',
-            footer_link3: 'Smart Space',
-            footer_link4: 'Custom Hardware',
+            footer_col1_title: 'Offer',
+            footer_link1: 'Dedicated Systems',
+            footer_link2: 'Ready Products',
             footer_col2_title: 'Company',
             footer_link5: 'Portfolio',
             footer_link6: 'How We Work',
@@ -114,16 +106,16 @@
             form_error_required: 'Please fill in all required fields.',
             form_error_email: 'Please enter a valid email address.',
             form_success: '✓ Your message has been sent. We\'ll be in touch within 24 hours.',
-            form_success_mailto: '✓ Opening your email client... If it doesn\'t open, email us at futumore.solutions@gmail.com',
-            form_error_generic: 'Something went wrong. Please email us directly at futumore.solutions@gmail.com',
+            form_success_mailto: '✓ Opening your email client... If it doesn\'t open, email us at contact@hello.futumore.pl',
+            form_error_generic: 'Something went wrong. Please email us directly at contact@hello.futumore.pl',
         },
         pl: {
             // Form status messages (PL defaults — rest is in the HTML)
             form_error_required: 'Wypełnij wszystkie wymagane pola.',
             form_error_email: 'Podaj poprawny adres email.',
             form_success: '✓ Wiadomość wysłana. Odezwiemy się w ciągu 24 godzin.',
-            form_success_mailto: '✓ Otwieramy klienta poczty... Jeśli się nie otworzy, napisz do nas na futumore.solutions@gmail.com',
-            form_error_generic: 'Coś poszło nie tak. Napisz do nas bezpośrednio na futumore.solutions@gmail.com',
+            form_success_mailto: '✓ Otwieramy klienta poczty... Jeśli się nie otworzy, napisz do nas na contact@hello.futumore.pl',
+            form_error_generic: 'Coś poszło nie tak. Napisz do nas bezpośrednio na contact@hello.futumore.pl',
         },
     };
 
@@ -252,14 +244,17 @@
 
         if (!nav || !burger || !links) return;
 
-        // Scroll behavior
+        // Scroll behavior tied to exact scroll position
         window.addEventListener('scroll', () => {
-            const isScrolled = window.scrollY > CONFIG.NAV_SCROLL_THRESHOLD;
-            if (isScrolled) {
-                nav.classList.add('nav--scrolled');
-            } else {
-                nav.classList.remove('nav--scrolled');
-            }
+            const scrollY = window.scrollY;
+            // Transition finishes exactly when the user has scrolled 1 full screen height (the hero section)
+            const heroHeight = window.innerHeight;
+            const progress = Math.min(Math.max(scrollY / heroHeight, 0), 1);
+            
+            nav.style.setProperty('--nav-progress', progress);
+            
+            const isScrolled = scrollY > 50;
+            nav.classList.toggle('nav--scrolled', isScrolled);
             document.body.classList.toggle('is-scrolled', isScrolled);
         }, { passive: true });
 
@@ -272,14 +267,31 @@
             document.body.style.overflow = isActive ? 'hidden' : '';
         });
 
-        // Close menu on link click
-        links.querySelectorAll('.nav__link').forEach(link => {
-            link.addEventListener('click', () => {
-                burger.classList.remove('active');
-                links.classList.remove('active');
-                nav.classList.remove('menu-open');
-                burger.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = '';
+        // Smooth scroll for nav links and close menu
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    e.preventDefault();
+                    
+                    // Smooth scroll to element
+                    window.scrollTo({
+                        top: targetElement.offsetTop,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (nav.classList.contains('menu-open')) {
+                        burger.classList.remove('active');
+                        links.classList.remove('active');
+                        nav.classList.remove('menu-open');
+                        burger.setAttribute('aria-expanded', 'false');
+                        document.body.style.overflow = '';
+                    }
+                }
             });
         });
     }

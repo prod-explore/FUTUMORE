@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200">
+    <defs>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&amp;display=swap');
+            .logo-text {
+                font-family: 'Space Grotesk', sans-serif;
+                font-weight: 700;
+                font-size: 120px;
+                fill: #ffffff; /* Biały tekst, można zmienić na #000000 do druku na jasnym */
+                letter-spacing: 0.05em;
+            }
+        </style>
+    </defs>
+    <!-- Przezroczyste tło (brak rect) -->
+    <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" class="logo-text">FUTUMORE</text>
+</svg>
