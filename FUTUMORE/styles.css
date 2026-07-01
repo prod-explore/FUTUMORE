@@ -633,8 +633,16 @@ footer {
     font-weight: var(--fw-black);
     line-height: 1.05;
     color: var(--c-white);
-    margin-bottom: var(--sp-2xl);
+    margin-bottom: var(--sp-md);
     letter-spacing: -0.02em;
+}
+
+.hero__subtitle {
+    font-size: clamp(1rem, 2vw, var(--fs-lg));
+    color: var(--c-gray-400);
+    max-width: 650px;
+    margin: 0 auto;
+    line-height: var(--lh-relaxed);
 }
 
 .hero__title-accent {
