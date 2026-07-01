@@ -1,1 +1,11 @@
-[]
+[
+    {
+        "id": "management-saas",
+        "category": "app",
+        "title": "Nextouch",
+        "description": "System bezprzewodowego sterowania PC za pomocą smartfona wykorzystujący protokół WebSockets.",
+        "specs": ["Zdalne sterowanie", "WebSockets", "Aplikacja Webowa"],
+        "link": "https://nextouch.futumore.pl",
+        "linkLabel": "Przetestuj Demo"
+    }
+]

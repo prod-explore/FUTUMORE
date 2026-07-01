@@ -95,27 +95,6 @@
                 </div>
             </div>
         </section>
-        <!-- PORTFOLIO -->
-        <section id="portfolio" class="section section--portfolio" aria-labelledby="portfolio-heading" style="padding-top: 100px; padding-bottom: 50px;">
-            <div class="container">
-                <div class="section__header srv-anim">
-                    <span class="section__tag">Portfolio</span>
-                    <h2 id="portfolio-heading" class="section__title">
-                        Nasze Produkty <span class="text-accent">w Akcji</span>
-                    </h2>
-                    <p class="section__desc">
-                        Zobacz wybrane realizacje oparte o nasze autorskie rozwiązania sprzętowe i aplikacje.
-                    </p>
-                </div>
-            </div>
-            <div class="carousel-wrapper carousel-wrapper--projects" aria-label="Karuzela zrealizowanych projektów">
-                <div class="carousel-track">
-                    <div class="carousel-row carousel-row--right" id="projects-carousel" data-category="product">
-                        <!-- Loaded dynamically from portfolio/projects/projects.json -->
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <!-- CTA -->
         <section id="cta" class="smart-cta">
@@ -125,7 +104,7 @@
                     <h2 class="smart-cta__title">Zainteresował Cię produkt?<br><span class="text-accent">Porozmawiajmy.</span></h2>
                     <p class="smart-cta__desc">Zostaw kontakt — porozmawiamy o szczegółach i wycenimy realizację.</p>
                     <form class="smart-cta__form" id="quick-contact-form">
-                        <input type="text" class="smart-cta__input" id="quick-contact-input" placeholder="+48 ___ ___ ___ lub email@firma.pl" required autocomplete="tel">
+                        <input type="text" class="smart-cta__input" id="quick-contact-input" placeholder="+48 ___ ___ ___" required autocomplete="tel">
                         <button type="submit" class="smart-cta__submit" id="quick-contact-submit">Zostaw kontakt →</button>
                     </form>
                     <div style="margin-bottom: 20px; text-align: left; font-size: 11px; color: var(--c-gray-400);">
@@ -246,70 +225,6 @@
 
         loadProducts();
 
-        // Portfolio Carousel Logic
-        let projectsData = [];
-        const INLINE_PROJECTS = [
-            { name: 'Fantastyczne Wspinanie', slug: 'skarpa', category: 'system', type: 'System rezerwacji', description: 'System rezerwacji zajęć i zarządzania uczestnikami.', url: null, favicon: 'fw-logo.png' },
-            { name: 'Studio Hypnagogia', slug: 'hypnagogia', category: 'system', type: 'Strona internetowa', description: 'Strona studia nagraniowego z optymalizacją SEO.', url: 'https://studio.hypnagogia.pl', favicon: 'hypnagogic-state.jpg' },
-            { name: 'Nextouch', slug: 'nextouch', category: 'product', type: 'Aplikacja Webowa', description: 'Zdalne sterowanie.', url: 'https://nextouch.futumore.pl', favicon: 'icon.png' }
-        ];
-
-        function initProjectsCarousel() {
-            const container = document.getElementById('projects-carousel');
-            if (!container) return;
-            fetch('/portfolio/projects/projects.json')
-                .then(res => { if (!res.ok) throw new Error(); return res.json(); })
-                .then(projects => {
-                    projectsData = projects;
-                    const cat = container.getAttribute('data-category');
-                    renderProjectCards(container, cat ? projectsData.filter(p => p.category === cat) : projectsData);
-                })
-                .catch(() => {
-                    projectsData = INLINE_PROJECTS;
-                    const cat = container.getAttribute('data-category');
-                    renderProjectCards(container, cat ? projectsData.filter(p => p.category === cat) : projectsData);
-                });
-        }
-
-        function renderProjectCards(container, projects) {
-            if (!projects.length) { container.closest('.carousel-wrapper--projects').style.display = 'none'; return; }
-            let cards = projects.map(p => buildProjectCard(p)).join('');
-            if (projects.length > 0 && projects.length < 6) { cards = cards.repeat(Math.ceil(6 / projects.length)); }
-            container.innerHTML = cards + cards;
-            const wrapper = container.closest('.carousel-wrapper');
-            let currentScroll = 0; let isHovered = false;
-            wrapper.addEventListener('mouseenter', () => isHovered = true);
-            wrapper.addEventListener('mouseleave', () => isHovered = false);
-            if (wrapper.carouselAnimId) cancelAnimationFrame(wrapper.carouselAnimId);
-            function autoScroll() {
-                if (!isHovered) {
-                    currentScroll += 0.6;
-                    if (currentScroll >= container.scrollWidth / 2) currentScroll = 0;
-                    wrapper.scrollLeft = currentScroll;
-                }
-                wrapper.carouselAnimId = requestAnimationFrame(autoScroll);
-            }
-            autoScroll();
-        }
-
-        function buildProjectCard(project) {
-            const faviconSrc = project.favicon ? (project.favicon.startsWith('http') ? project.favicon : `/portfolio/projects/${project.favicon}`) : '';
-            const tag = project.url ? `a href="${project.url}" target="_blank" rel="noopener noreferrer"` : 'div';
-            const closeTag = project.url ? 'a' : 'div';
-            return `
-                <${tag} class="project-card">
-                    ${faviconSrc ? `<img class="project-card__favicon" src="${faviconSrc}" alt="${project.name}" loading="lazy" onerror="this.style.display='none'">` : ''}
-                    <div class="project-card__info">
-                        <span class="project-card__name">${project.name}</span>
-                        <span class="project-card__type">${project.type}</span>
-                    </div>
-                    <div class="project-card__tooltip">
-                        <span class="project-card__tooltip-desc">${project.description}</span>
-                    </div>
-                </${closeTag}>`;
-        }
-
-        initProjectsCarousel();
 
         // Quick contact form
         const form = document.getElementById('quick-contact-form');
