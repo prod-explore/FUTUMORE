@@ -27,7 +27,7 @@
             // Hero
             hero_badge: 'Business IT Solutions',
             hero_title_1: 'Technology from the future.',
-            hero_title_2: 'Results for today.',
+            hero_title_2: 'Scaling your business into tomorrow.',
             hero_subtitle: 'We design and implement technologies that become a real lever for your company\'s growth. We automate processes, optimize costs, and deliver systems that scale business based on hard data.',
             hero_cta_primary: 'Book a Free Call',
             hero_cta_secondary: 'See Solutions',
