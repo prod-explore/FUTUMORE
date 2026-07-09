@@ -26,8 +26,8 @@
             nav_cta: 'Book a Call',
             // Hero
             hero_badge: 'Business IT Solutions',
-            hero_title_1: 'Technology from the future.',
-            hero_title_2: 'Results for today.',
+            hero_title_1: 'Technology that agregates results.',
+            hero_title_2: 'Solutions from the future in your business.',
             hero_subtitle: 'We design and implement technologies that become a real lever for your company\'s growth. We automate processes, optimize costs, and deliver systems that scale business based on hard data.',
             hero_cta_primary: 'Book a Free Call',
             hero_cta_secondary: 'See Solutions',
@@ -62,7 +62,7 @@
             portfolio_tag: 'Portfolio',
             portfolio_title_1: 'Trusted By',
             portfolio_title_2: 'Innovators',
-            portfolio_desc: 'From startups to established companies — our solutions power businesses that think about the future.',
+            portfolio_desc: 'From solo businesses to organized teams — our solutions power businesses that think about the future.',
             // Process
             process_tag: 'How We Work',
             process_title_1: 'From Idea to',
@@ -250,9 +250,9 @@
             // Transition finishes exactly when the user has scrolled 1 full screen height (the hero section)
             const heroHeight = window.innerHeight;
             const progress = Math.min(Math.max(scrollY / heroHeight, 0), 1);
-            
+
             nav.style.setProperty('--nav-progress', progress);
-            
+
             const isScrolled = scrollY > 50;
             nav.classList.toggle('nav--scrolled', isScrolled);
             document.body.classList.toggle('is-scrolled', isScrolled);
@@ -269,20 +269,20 @@
 
         // Smooth scroll for nav links and close menu
         document.querySelectorAll('a[href^="#"]').forEach(link => {
-            link.addEventListener('click', function(e) {
+            link.addEventListener('click', function (e) {
                 const targetId = this.getAttribute('href');
                 if (targetId === '#') return;
-                
+
                 const targetElement = document.querySelector(targetId);
                 if (targetElement) {
                     e.preventDefault();
-                    
+
                     // Smooth scroll to element
                     window.scrollTo({
                         top: targetElement.offsetTop,
                         behavior: 'smooth'
                     });
-                    
+
                     // Close mobile menu if open
                     if (nav.classList.contains('menu-open')) {
                         burger.classList.remove('active');
@@ -322,7 +322,7 @@
         const isMobile = () => window.innerWidth < 768;
 
         function resize() {
-            canvas.width  = window.innerWidth;
+            canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
 
@@ -418,8 +418,8 @@
             const mx = (smoothMouse.x - cx) / cx || 0; // -1 to 1
             const my = (smoothMouse.y - cy) / cy || 0;
             const parallax = [
-                { x: mx * 3,  y: my * 3  },   // layer 0: barely moves
-                { x: mx * 8,  y: my * 8  },   // layer 1: subtle
+                { x: mx * 3, y: my * 3 },   // layer 0: barely moves
+                { x: mx * 8, y: my * 8 },   // layer 1: subtle
                 { x: mx * 15, y: my * 15 },   // layer 2: most movement
             ];
 
@@ -817,7 +817,7 @@
        ═══════════════════════════════════════════════════════════ */
     function initSmoothScroll() {
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+            anchor.addEventListener('click', function (e) {
                 const targetId = this.getAttribute('href');
                 if (targetId === '#') return;
 
@@ -904,13 +904,13 @@
 
         const isEn = currentLang === 'en';
         let cards = projects.map(p => buildProjectCard(p, isEn)).join('');
-        
+
         // Wypełniamy ekran i duplikujemy, żeby karuzela mogła kręcić się w nieskończoność bez przeskoku
         if (projects.length > 0 && projects.length < 6) {
             const multiplier = Math.ceil(6 / projects.length);
             cards = cards.repeat(multiplier);
         }
-        
+
         // Podwajamy cały zestaw, żeby uzyskać idealny seamless infinite loop
         container.innerHTML = cards + cards;
 
@@ -978,7 +978,7 @@
         let isDragging = false;
         let startY;
         let startScrollY;
-        
+
         let lastScrollY = window.scrollY;
         let heat = 0; // 0.0 to 1.0
 
@@ -996,7 +996,7 @@
             }
 
             const scrollPercentage = scrollY / (documentHeight - windowHeight);
-            const thumbHeight = Math.max(windowHeight * (windowHeight / documentHeight), 40); 
+            const thumbHeight = Math.max(windowHeight * (windowHeight / documentHeight), 40);
             const topPosition = scrollPercentage * (windowHeight - thumbHeight);
 
             scrollbar.style.height = `${thumbHeight}px`;
@@ -1004,10 +1004,10 @@
 
             if (!isDragging) {
                 const dy = Math.abs(scrollY - lastScrollY);
-                
+
                 if (dy > 0) {
                     // Wzrost temperatury (rozgrzewanie przy ruchu)
-                    heat += dy * 0.015; 
+                    heat += dy * 0.015;
                     if (heat > 1) heat = 1;
                 } else {
                     // Spadek temperatury (stygnięcie przy braku ruchu)
@@ -1039,7 +1039,7 @@
             const windowHeight = window.innerHeight;
             const documentHeight = document.documentElement.scrollHeight;
             const thumbHeight = parseFloat(scrollbar.style.height);
-            
+
             const scrollRatio = (documentHeight - windowHeight) / (windowHeight - thumbHeight);
             window.scrollTo(0, startScrollY + deltaY * scrollRatio);
         });
